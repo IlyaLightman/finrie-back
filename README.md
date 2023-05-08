@@ -8,3 +8,5 @@ Coins are exchanged between users through transactions. First, they go into the 
 
 #### Database Schema
 ![Schema](https://i.ibb.co/94mstDC/schema.png)
+
+Migrate: `npx prisma migrate dev --name <name>`

@@ -8,7 +8,127 @@ datasource db {
 }
 
 model System {
-  id String @id @default(uuid())
+  @@map("systems")
+
+  system_id String @db.Uuid @id @default(uuid())
   name String @unique
+  description String
+  issuance_restriction String
+  issuance_current_linit Int
+  issuance_rule String
+  kyc_fields Json
+  created_at DateTime @default(now())
   password_hash String
+  hash String
+  users User[]
+  senders Sender[]
+  receivers Receiver[]
+  weekly_statements WeeklyStatement[]
+  transactions_pool PoolTransaction[]
+  transactions Transaction[]
+}
+
+model User {
+  @@map("users")
+
+  user_id String @db.Uuid @id @default(uuid())
+  name String @unique
+  system_id String @db.Uuid
+  system System @relation(fields: [system_id], references: [system_id])
+  kyc_data Json
+  status String
+  password_hash String
+  registered_at DateTime @default(now())
+  weekly_statements WeeklyStatement[]
+}
+
+enum SenderType {
+  system
+  user
+}
+
+model Sender {
+  @@map("senders")
+
+  sender_id String @db.Uuid @id @default(uuid())
+  user_id String
+  system_id String @db.Uuid
+  system System @relation(fields: [system_id], references: [system_id])
+  type SenderType
+  transactions_pool PoolTransaction[]
+  transactions Transaction[]
+}
+
+enum ReceiverType {
+  user
+}
+
+model Receiver {
+  @@map("receivers")
+
+  receiver_id String @db.Uuid @id @default(uuid())
+  user_id String
+  system_id String @db.Uuid
+  system System @relation(fields: [system_id], references: [system_id])
+  type ReceiverType
+  transactions_pool PoolTransaction[]
+  transactions Transaction[]
+}
+
+model WeeklyStatement {
+  @@map("weekly_statements")
+
+  weekly_statement_id String @db.Uuid @id @default(uuid())
+  balance Int
+  system_id String @db.Uuid
+  system System @relation(fields: [system_id], references: [system_id])
+  user_id String @db.Uuid
+  user User @relation(fields: [user_id], references: [user_id])
+  timestamp DateTime @default(now())
+  week_number Int
+  transactions_count Int
+}
+
+enum TransactionType {
+  issuance
+  transfer
+}
+
+enum PoolTransactionStatus {
+  processing
+  discarded
+}
+
+model PoolTransaction {
+  @@map("transactions_pool")
+
+  pool_transactions_id String @db.Uuid @id @default(uuid())
+  type TransactionType
+  value Int
+  system_id String @db.Uuid
+  system System @relation(fields: [system_id], references: [system_id])
+  sender_id String @db.Uuid
+  sender Sender @relation(fields: [sender_id], references: [sender_id])
+  receiver_id String @db.Uuid
+  receiver Receiver @relation(fields: [receiver_id], references: [receiver_id])
+  created_at DateTime @default(now())
+  status PoolTransactionStatus
+}
+
+model Transaction {
+  @@map("transactions")
+
+  transaction_id String @db.Uuid @id @default(uuid())
+  type TransactionType
+  value Int
+  system_id String @db.Uuid
+  system System @relation(fields: [system_id], references: [system_id])
+  sender_id String @db.Uuid
+  sender Sender @relation(fields: [sender_id], references: [sender_id])
+  receiver_id String @db.Uuid
+  receiver Receiver @relation(fields: [receiver_id], references: [receiver_id])
+  created_at DateTime
+  accepted_at DateTime @default(now())
+  hash String
+  prev_hash String
 }
