@@ -10,4 +10,5 @@ datasource db {
 model System {
   id String @id @default(uuid())
   name String @unique
+  password_hash String
 }

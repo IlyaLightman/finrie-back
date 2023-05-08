@@ -1,9 +1,31 @@
-import Fastify from 'fastify'
-import systemRoutes from './modules/system/system.route'
+import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
+import fastifyJwt from '@fastify/jwt'
 
-const server = Fastify()
+import systemRoutes from './modules/system/system.route'
+import { systemSchemas } from './modules/system/system.schema'
+
+export const server = Fastify()
+
+declare module 'fastify' {
+	export interface FastifyInstance {
+		authenticate: any
+	}
+}
+
+server.register(fastifyJwt, {
+	secret: () => process.env.SECRET
+})
+
+server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
+	try {
+		await request.jwtVerify()
+	} catch (err) {
+		return reply.send(err)
+	}
+})
 
 const main = async () => {
+	systemSchemas.forEach(schema => server.addSchema(schema))
 	server.register(systemRoutes, { prefix: '/system' })
 
 	try {
