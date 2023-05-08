@@ -1,5 +1,4 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
-import fastifyJwt from '@fastify/jwt'
 
 import systemRoutes from './modules/system/system.route'
 import { systemSchemas } from './modules/system/system.schema'
@@ -7,13 +6,17 @@ import { systemSchemas } from './modules/system/system.schema'
 export const server = Fastify()
 
 declare module 'fastify' {
+	interface FastifyRequest {
+		jwtVerify: any
+	}
 	export interface FastifyInstance {
 		authenticate: any
+		jwt: any
 	}
 }
 
-server.register(fastifyJwt, {
-	secret: () => process.env.SECRET
+server.register(require('@fastify/jwt'), {
+	secret: process.env.SECRET
 })
 
 server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {

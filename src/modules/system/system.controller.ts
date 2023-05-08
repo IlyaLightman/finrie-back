@@ -2,7 +2,8 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { createSystem, findSystemByName, findSystems } from './system.service'
 import { CreateSystemInput, LoginSystemInput } from './system.schema'
 import { verifyPassword } from '../../utils/hash'
-import { server } from '../../app'
+
+import { server } from './../../app'
 
 export const registerSystemHandler = async (
 	request: FastifyRequest<{ Body: CreateSystemInput }>,
@@ -39,6 +40,7 @@ export const loginSystemHandler = async (
 	const isPasswordCorrect = await verifyPassword(body.password, system.password_hash)
 	if (isPasswordCorrect) {
 		const { password_hash, ...data } = system
+
 		return { accessToken: server.jwt.sign(data) }
 	}
 
