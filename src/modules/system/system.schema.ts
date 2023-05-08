@@ -31,7 +31,8 @@ const loginSystemResponseSchema = z.object({
 })
 
 const systemResponseSchema = z.object({
-	...systemCommon
+	...systemCommon,
+	hash: z.string()
 })
 
 const systemsResponseSchema = z.array(systemResponseSchema)
@@ -45,5 +46,6 @@ export const { schemas: systemSchemas, $ref } = buildJsonSchemas({
 	createSystemResponseSchema,
 	loginSystemSchema,
 	loginSystemResponseSchema,
+	systemResponseSchema,
 	systemsResponseSchema
 })

@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { createSystem, findSystemByName, findSystems } from './system.service'
+import { createSystem, findSystem, findSystems } from './system.service'
 import { CreateSystemInput, LoginSystemInput } from './system.schema'
 import { verifyPassword } from '../../utils/hash'
 
@@ -12,7 +12,7 @@ export const registerSystemHandler = async (
 	const body = request.body
 
 	try {
-		const existing_system = await findSystemByName(body.name)
+		const existing_system = await findSystem({ name: body.name })
 		if (existing_system) {
 			return reply.code(401).send({ message: 'System with this name already exists' })
 		}
@@ -32,7 +32,7 @@ export const loginSystemHandler = async (
 ) => {
 	const body = request.body
 
-	const system = await findSystemByName(body.name)
+	const system = await findSystem({ name: body.name })
 	if (!system) {
 		return reply.code(401).send({ message: "There isn't system with provided name" })
 	}
@@ -45,6 +45,12 @@ export const loginSystemHandler = async (
 	}
 
 	return reply.code(401).send({ message: 'The password is incorrect' })
+}
+
+export const getSystemHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
+	console.log({ id: request.params.id })
+	const system = await findSystem({ id: request.params.id })
+	return system
 }
 
 export const getSystemsHandler = async () => {
