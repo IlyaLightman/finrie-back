@@ -11,6 +11,11 @@ export const registerSystemHandler = async (
 	const body = request.body
 
 	try {
+		const existing_system = await findSystemByName(body.name)
+		if (existing_system) {
+			return reply.code(401).send({ message: 'System with this name already exists' })
+		}
+
 		const system = await createSystem(body)
 
 		return reply.code(201).send(system)
@@ -27,7 +32,9 @@ export const loginSystemHandler = async (
 	const body = request.body
 
 	const system = await findSystemByName(body.name)
-	if (!system) return reply.code(401).send({ message: "There isn't system with provided name" })
+	if (!system) {
+		return reply.code(401).send({ message: "There isn't system with provided name" })
+	}
 
 	const isPasswordCorrect = await verifyPassword(body.password, system.password_hash)
 	if (isPasswordCorrect) {
