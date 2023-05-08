@@ -40,15 +40,15 @@ export const loginSystemHandler = async (
 	const isPasswordCorrect = await verifyPassword(body.password, system.password_hash)
 	if (isPasswordCorrect) {
 		const { password_hash, ...data } = system
+		const toSign = { ...data, role: 'system' }
 
-		return { accessToken: server.jwt.sign(data) }
+		return { accessToken: server.jwt.sign(toSign) }
 	}
 
 	return reply.code(401).send({ message: 'The password is incorrect' })
 }
 
 export const getSystemHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
-	console.log({ id: request.params.id })
 	const system = await findSystem({ id: request.params.id })
 	return system
 }

@@ -1,5 +1,5 @@
-import { hashPassword } from '../../utils/hash'
 import prisma from '../../utils/prisma'
+import { hashPassword } from '../../utils/hash'
 import { CreateSystemInput } from './system.schema'
 
 export const createSystem = async (input: CreateSystemInput) => {
