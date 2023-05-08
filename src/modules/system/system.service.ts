@@ -7,7 +7,11 @@ export const createSystem = async (input: CreateSystemInput) => {
 
 	const passwordHash = await hashPassword(password)
 	const system = await prisma.system.create({
-		data: { ...data, passwordHash }
+		data: {
+			...data,
+			password_hash: passwordHash,
+			hash: '123'
+		}
 	})
 
 	return system

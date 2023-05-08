@@ -16,7 +16,7 @@ CREATE TABLE "systems" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "issuance_restriction" TEXT NOT NULL,
-    "issuance_current_linit" INTEGER NOT NULL,
+    "issuance_current_limit" INTEGER NOT NULL,
     "issuance_rule" TEXT NOT NULL,
     "kyc_fields" JSONB NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

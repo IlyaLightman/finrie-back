@@ -14,7 +14,7 @@ model System {
   name String @unique
   description String
   issuance_restriction String
-  issuance_current_linit Int
+  issuance_current_limit Int
   issuance_rule String
   kyc_fields Json
   created_at DateTime @default(now())
