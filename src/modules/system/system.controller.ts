@@ -32,7 +32,7 @@ export const loginSystemHandler = async (
 ) => {
 	const body = request.body
 
-	const system = await findSystem({ name: body.name })
+	const system = await findSystem({ name: body.name, withPassword: true })
 	if (!system) {
 		return reply.code(401).send({ message: "There isn't system with provided name" })
 	}

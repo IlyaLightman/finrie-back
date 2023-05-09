@@ -27,10 +27,18 @@ const findSelect = {
 	hash: true
 }
 
-export const findSystem = async ({ name, id }: { name?: string; id?: string }) => {
+export const findSystem = async ({
+	name,
+	id,
+	withPassword = false
+}: {
+	name?: string
+	id?: string
+	withPassword?: boolean
+}) => {
 	return prisma.system.findUnique({
 		where: name ? { name } : { system_id: id },
-		select: findSelect
+		select: { ...findSelect, ...(withPassword ? { password_hash: true } : {}) }
 	})
 }
 
