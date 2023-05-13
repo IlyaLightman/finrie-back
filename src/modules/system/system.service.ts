@@ -38,14 +38,14 @@ export const findSystem = async ({
 	id?: string
 	withPassword?: boolean
 }) => {
-	return prisma.system.findFirst({
+	return await prisma.system.findFirst({
 		where: name ? { name } : { system_id: id },
 		select: { ...findSelect, ...(withPassword ? { password_hash: true } : {}) }
 	})
 }
 
 export const findSystems = async () => {
-	return prisma.system.findMany({
+	return await prisma.system.findMany({
 		select: findSelect
 	})
 }

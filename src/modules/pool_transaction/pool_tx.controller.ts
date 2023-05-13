@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 
 import { CreatePoolTxBodyInput, CreatePoolTxInput } from './pool_tx.schema'
 
-import { createPoolTx } from './pool_tx.service'
+import { createPoolTx, findPoolTxsOfUser } from './pool_tx.service'
 import { getUserSender } from '../sender'
 import { getSystemSender } from '../sender'
 import { getCurrentIssuanceLimit } from '../system/system.service'
@@ -101,6 +101,10 @@ export const createPoolTxHandler = async (
 export const getPoolTxsHandler = async (
 	request: FastifyRequest<{ Params: { system_id: string } }>
 ) => {
-	const poolTxs = await findPoolTxs({ system_id: request.params.system_id })
-	return poolTxs
+	return await findPoolTxs({ system_id: request.params.system_id })
+}
+
+export const getPoolTxsOfUserHandler = async (request: FastifyRequest) => {
+	const { system_id, user_id } = request.user
+	return await findPoolTxsOfUser(system_id, user_id)
 }

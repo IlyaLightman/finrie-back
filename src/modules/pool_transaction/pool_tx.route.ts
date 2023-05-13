@@ -1,7 +1,11 @@
 import { FastifyInstance } from 'fastify'
 
 import { $ref } from './pool_tx.schema'
-import { createPoolTxHandler, getPoolTxsHandler } from './pool_tx.controller'
+import {
+	createPoolTxHandler,
+	getPoolTxsHandler,
+	getPoolTxsOfUserHandler
+} from './pool_tx.controller'
 
 const poolTxRoutes = async (server: FastifyInstance) => {
 	server.post(
@@ -24,6 +28,17 @@ const poolTxRoutes = async (server: FastifyInstance) => {
 			}
 		},
 		getPoolTxsHandler
+	)
+
+	server.get(
+		'/',
+		{
+			preHandler: [server.authenticate, server.checkUser],
+			schema: {
+				response: { 200: $ref('poolTxsResponseSchema') }
+			}
+		},
+		getPoolTxsOfUserHandler
 	)
 }
 

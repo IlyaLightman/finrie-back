@@ -2,9 +2,12 @@ import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
 
 import systemRoutes from './modules/system/system.route'
 import userRoutes from './modules/user/user.route'
+import poolTxRoutes from './modules/pool_transaction/pool_tx.route'
+
 import { systemSchemas } from './modules/system/system.schema'
 import { userSchemas } from './modules/user/user.schema'
 import { poolTxSchemas } from './modules/pool_transaction/pool_tx.schema'
+
 import { findUser } from './modules/user/user.service'
 import { findSystem } from './modules/system/system.service'
 import { checkSystem, checkUser } from './utils/decorateChecks'
@@ -58,6 +61,7 @@ const main = async () => {
 	poolTxSchemas.forEach(schema => server.addSchema(schema))
 	server.register(systemRoutes, { prefix: '/system' })
 	server.register(userRoutes, { prefix: '/user' })
+	server.register(poolTxRoutes, { prefix: '/pool_tx' })
 
 	try {
 		const host = process.env.ADDRESS || '0.0.0.0'

@@ -36,14 +36,14 @@ export const findUser = async ({
 	id?: string
 	withPassword?: boolean
 }) => {
-	return prisma.user.findFirst({
+	return await prisma.user.findFirst({
 		where: name ? { system_id, name } : { system_id, user_id: id },
 		select: { ...findSelect, ...(withPassword ? { password_hash: true } : {}) }
 	})
 }
 
 export const findUsers = async ({ system_id }: { system_id: string }) => {
-	return prisma.user.findMany({
+	return await prisma.user.findMany({
 		where: { system_id },
 		select: findSelect
 	})

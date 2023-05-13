@@ -37,16 +37,18 @@ A weekly report on the movement of coins in the system. It is created every week
 ### API
 
 ##### System
-- `POST /system/` - Register a system
+- `POST /system` - Register a system
 - `POST /system/login` - Login to the system
-- `GET /system/` - Get all systems
-- `GET /system/:id` - Get system by id
+- `GET /system` - Get all systems (*auth*)
+- `GET /system/:id` - Get system by id (*auth*)
 
 ##### User
-- `POST /user/` - Register a user
+- `POST /user` - Register a user
 - `POST /user/login` - Login to the user
-- `GET /user/:system_id` - Get all users of the system
-- `GET /user/:system_id/:id` - Get user of system by id
+- `GET /user/:system_id` - Get all users of the system (*auth*)
+- `GET /user/:system_id/:id` - Get user of system by id (*auth*)
 
 ##### Pool Transaction
-- `POST /pool_tx/` - Create a pool transaction (if you log in as a system, then the sender will be the system, if you log in as a user, then the sender will be the user)
+- `POST /pool_tx` - Create a pool transaction (if you log in as a system, then the sender will be the system, if you log in as a user, then the sender will be the user) (*auth*)
+- `GET /pool_tx/:system_id` - Get all pool transactions of system (*auth*)
+- `GET /pool_tx` - Get all pool transactions of authenticated user where he is the sender or recipient (*auth user*)
