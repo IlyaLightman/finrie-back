@@ -1,7 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
+
 import { verifyPassword } from '../../utils/hash'
 import { createUser, findUser, findUsers } from './user.service'
 import { CreateUserInput, LoginUserInput } from './user.schema'
+import { createSender } from '../sender'
+import { createReceiver } from '../receiver'
 
 import { server } from './../../app'
 
@@ -21,6 +24,8 @@ export const registerUserHandler = async (
 		}
 
 		const user = await createUser(body)
+		await createSender({ system_id: user.system_id, user_id: user.user_id })
+		await createReceiver({ system_id: user.system_id, user_id: user.user_id })
 
 		return reply.code(201).send(user)
 	} catch (err) {

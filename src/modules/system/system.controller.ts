@@ -1,9 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
+
 import { verifyPassword } from '../../utils/hash'
 import { createSystem, findSystem, findSystems } from './system.service'
 import { CreateSystemInput, LoginSystemInput } from './system.schema'
 
 import { server } from './../../app'
+import { createSender } from '../sender'
 
 export const registerSystemHandler = async (
 	request: FastifyRequest<{ Body: CreateSystemInput }>,
@@ -18,6 +20,7 @@ export const registerSystemHandler = async (
 		}
 
 		const system = await createSystem(body)
+		await createSender({ system_id: system.system_id })
 
 		return reply.code(201).send(system)
 	} catch (err) {

@@ -29,14 +29,16 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 		await request.jwtVerify()
 
 		if (request.user?.role === 'user') {
-			request.user = await findUser({
+			const user = await findUser({
 				system_id: request.user.system_id,
 				id: request.user.id
 			})
+			request.user = { ...user, role: 'user' }
 		} else if (request.user?.role === 'system') {
-			request.user = await findSystem({
+			const system = await findSystem({
 				id: request.user.system_id
 			})
+			request.user = { ...system, role: 'system' }
 		}
 	} catch (err) {
 		return reply.send(err)

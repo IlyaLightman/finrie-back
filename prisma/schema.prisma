@@ -14,8 +14,8 @@ model System {
   name String @unique
   description String
   issuance_restriction String
-  issuance_current_limit Int
-  issuance_rule String
+  issuance_current_limit Int?
+  issuance_rule String?
   kyc_fields Json
   created_at DateTime @default(now())
   password_hash String
@@ -40,6 +40,8 @@ model User {
   password_hash String
   registered_at DateTime @default(now())
   weekly_statements WeeklyStatement[]
+  senders Sender[]
+  receivers Receiver[]
 }
 
 enum SenderType {
@@ -51,7 +53,8 @@ model Sender {
   @@map("senders")
 
   sender_id String @db.Uuid @id @default(uuid())
-  user_id String
+  user_id String? @db.Uuid
+  user User? @relation(fields: [user_id], references: [user_id])
   system_id String @db.Uuid
   system System @relation(fields: [system_id], references: [system_id])
   type SenderType
@@ -67,7 +70,8 @@ model Receiver {
   @@map("receivers")
 
   receiver_id String @db.Uuid @id @default(uuid())
-  user_id String
+  user_id String? @db.Uuid
+  user User? @relation(fields: [user_id], references: [user_id])
   system_id String @db.Uuid
   system System @relation(fields: [system_id], references: [system_id])
   type ReceiverType

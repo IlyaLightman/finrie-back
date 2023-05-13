@@ -16,8 +16,8 @@ CREATE TABLE "systems" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "issuance_restriction" TEXT NOT NULL,
-    "issuance_current_limit" INTEGER NOT NULL,
-    "issuance_rule" TEXT NOT NULL,
+    "issuance_current_limit" INTEGER,
+    "issuance_rule" TEXT,
     "kyc_fields" JSONB NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "password_hash" TEXT NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "senders" (
     "sender_id" UUID NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "user_id" UUID,
     "system_id" UUID NOT NULL,
     "type" "SenderType" NOT NULL,
 
@@ -52,7 +52,7 @@ CREATE TABLE "senders" (
 -- CreateTable
 CREATE TABLE "receivers" (
     "receiver_id" UUID NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "user_id" UUID,
     "system_id" UUID NOT NULL,
     "type" "ReceiverType" NOT NULL,
 
@@ -112,7 +112,13 @@ CREATE UNIQUE INDEX "users_name_key" ON "users"("name");
 ALTER TABLE "users" ADD CONSTRAINT "users_system_id_fkey" FOREIGN KEY ("system_id") REFERENCES "systems"("system_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "senders" ADD CONSTRAINT "senders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "senders" ADD CONSTRAINT "senders_system_id_fkey" FOREIGN KEY ("system_id") REFERENCES "systems"("system_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "receivers" ADD CONSTRAINT "receivers_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "receivers" ADD CONSTRAINT "receivers_system_id_fkey" FOREIGN KEY ("system_id") REFERENCES "systems"("system_id") ON DELETE RESTRICT ON UPDATE CASCADE;
