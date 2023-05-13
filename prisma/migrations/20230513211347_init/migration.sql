@@ -16,7 +16,7 @@ CREATE TABLE "systems" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "issuance_restriction" TEXT NOT NULL,
-    "issuance_current_limit" INTEGER,
+    "issuance_current_limit" INTEGER NOT NULL,
     "issuance_rule" TEXT,
     "kyc_fields" JSONB NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -81,7 +81,7 @@ CREATE TABLE "transactions_pool" (
     "sender_id" UUID NOT NULL,
     "receiver_id" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "status" "PoolTransactionStatus" NOT NULL,
+    "status" "PoolTransactionStatus" NOT NULL DEFAULT 'processing',
 
     CONSTRAINT "transactions_pool_pkey" PRIMARY KEY ("pool_transactions_id")
 );

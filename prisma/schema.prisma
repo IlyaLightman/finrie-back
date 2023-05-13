@@ -14,7 +14,7 @@ model System {
   name String @unique
   description String
   issuance_restriction String
-  issuance_current_limit Int?
+  issuance_current_limit Int
   issuance_rule String?
   kyc_fields Json
   created_at DateTime @default(now())
@@ -116,7 +116,7 @@ model PoolTransaction {
   receiver_id String @db.Uuid
   receiver Receiver @relation(fields: [receiver_id], references: [receiver_id])
   created_at DateTime @default(now())
-  status PoolTransactionStatus
+  status PoolTransactionStatus @default(processing)
 }
 
 model Transaction {

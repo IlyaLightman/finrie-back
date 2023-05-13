@@ -33,6 +33,7 @@ const loginSystemResponseSchema = z.object({
 
 const systemResponseSchema = z.object({
 	...systemCommon,
+	system_id: z.string(),
 	hash: z.string()
 })
 

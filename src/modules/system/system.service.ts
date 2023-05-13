@@ -49,3 +49,12 @@ export const findSystems = async () => {
 		select: findSelect
 	})
 }
+
+export const getCurrentIssuanceLimit = async (system_id: string) => {
+	const system = await prisma.system.findFirst({
+		where: { system_id },
+		select: { issuance_current_limit: true }
+	})
+
+	return system?.issuance_current_limit || 0
+}

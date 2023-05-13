@@ -4,6 +4,7 @@ import systemRoutes from './modules/system/system.route'
 import userRoutes from './modules/user/user.route'
 import { systemSchemas } from './modules/system/system.schema'
 import { userSchemas } from './modules/user/user.schema'
+import { poolTxSchemas } from './modules/pool_transaction/pool_tx.schema'
 import { findUser } from './modules/user/user.service'
 import { findSystem } from './modules/system/system.service'
 
@@ -48,6 +49,7 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 const main = async () => {
 	systemSchemas.forEach(schema => server.addSchema(schema))
 	userSchemas.forEach(schema => server.addSchema(schema))
+	poolTxSchemas.forEach(schema => server.addSchema(schema))
 	server.register(systemRoutes, { prefix: '/system' })
 	server.register(userRoutes, { prefix: '/user' })
 

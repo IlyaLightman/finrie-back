@@ -31,7 +31,8 @@ const loginUserResponseSchema = z.object({
 })
 
 const userResponseSchema = z.object({
-	...userCommon
+	...userCommon,
+	user_id: z.string()
 })
 
 const usersResponseSchema = z.array(userResponseSchema)
