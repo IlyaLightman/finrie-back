@@ -8,7 +8,28 @@ Coins are exchanged between users through transactions. First, they go into the 
 
 Run Dev: `npm run dev`
 
-#### Database Schema
+### Database Schema
 ![Schema](https://s1.hostingkartinok.com/uploads/images/2023/05/5601d880da9175d663059eef6f74e42e.png)
 
 Migrate: `npx prisma migrate dev --name <name>`
+
+##### System
+It is an aforementioned 'local financial system'. Registering a system is essentially the same as registering a user who can only operate it (set up issuance, hand out coins, accept participants)
+
+##### User
+A user is a participant in a system. He can receive coins from the administrator and transfer them to other users. The difference with system registration is that the user specifies the name of an existing system
+
+##### Sender
+The sender can be a user or a system, this object is created for them by default and then used in transactions
+
+##### Receiver
+The same as the sender, but for the recipient
+
+##### Pool transaction
+A transaction that is in the transaction pool. It is created when a user sends coins to another user. The transaction pool is constantly monitored and transactions are registered from it
+
+##### Transaction
+Coin transfer transaction. It is created when a transaction is registered from the transaction pool
+
+##### Weekly statement
+A weekly report on the movement of coins in the system. It is created every week and balances calculates with it to improve performance (not to calculate balances every time from the beginning of the system)
