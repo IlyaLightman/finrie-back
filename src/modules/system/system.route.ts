@@ -1,12 +1,12 @@
 import { FastifyInstance } from 'fastify'
 
+import { $ref } from './system.schema'
 import {
 	getSystemHandler,
 	getSystemsHandler,
 	loginSystemHandler,
 	registerSystemHandler
 } from './system.controller'
-import { $ref } from './system.schema'
 
 const systemRoutes = async (server: FastifyInstance) => {
 	server.post(

@@ -18,12 +18,14 @@ export const createSystem = async (input: CreateSystemInput) => {
 }
 
 const findSelect = {
+	system_id: true,
 	name: true,
 	description: true,
 	issuance_restriction: true,
 	issuance_current_limit: true,
 	issuance_rule: true,
 	kyc_fields: true,
+	created_at: true,
 	hash: true
 }
 
@@ -36,7 +38,7 @@ export const findSystem = async ({
 	id?: string
 	withPassword?: boolean
 }) => {
-	return prisma.system.findUnique({
+	return prisma.system.findFirst({
 		where: name ? { name } : { system_id: id },
 		select: { ...findSelect, ...(withPassword ? { password_hash: true } : {}) }
 	})

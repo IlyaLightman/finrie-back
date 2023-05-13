@@ -1,7 +1,9 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
 
 import systemRoutes from './modules/system/system.route'
+import userRoutes from './modules/user/user.route'
 import { systemSchemas } from './modules/system/system.schema'
+import { userSchemas } from './modules/user/user.schema'
 
 export const server = Fastify()
 
@@ -29,11 +31,15 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 
 const main = async () => {
 	systemSchemas.forEach(schema => server.addSchema(schema))
+	userSchemas.forEach(schema => server.addSchema(schema))
 	server.register(systemRoutes, { prefix: '/system' })
+	server.register(userRoutes, { prefix: '/user' })
 
 	try {
-		await server.listen(5000, '0.0.0.0')
-		console.log(`Server listening on ${server.server.address()}`)
+		const address = process.env.ADDRESS || '0.0.0.0'
+		const port = process.env.PORT || 3000
+		await server.listen(port, address)
+		console.log(`Server listening on ${address}:${port}`)
 	} catch (err) {
 		console.error(err)
 		process.exit(1)

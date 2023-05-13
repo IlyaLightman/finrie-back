@@ -41,11 +41,14 @@ export type CreateSystemInput = z.infer<typeof createSystemSchema>
 
 export type LoginSystemInput = z.infer<typeof loginSystemSchema>
 
-export const { schemas: systemSchemas, $ref } = buildJsonSchemas({
-	createSystemSchema,
-	createSystemResponseSchema,
-	loginSystemSchema,
-	loginSystemResponseSchema,
-	systemResponseSchema,
-	systemsResponseSchema
-})
+export const { schemas: systemSchemas, $ref } = buildJsonSchemas(
+	{
+		createSystemSchema,
+		createSystemResponseSchema,
+		loginSystemSchema,
+		loginSystemResponseSchema,
+		systemResponseSchema,
+		systemsResponseSchema
+	},
+	{ $id: 'system' }
+)
