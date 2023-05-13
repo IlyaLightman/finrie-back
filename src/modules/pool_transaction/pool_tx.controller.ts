@@ -8,6 +8,8 @@ import { getSystemSender } from '../sender'
 import { getCurrentIssuanceLimit } from '../system/system.service'
 import { getUserBalance } from '../../balances'
 import { getUserReceiver } from '../receiver'
+import { get } from 'http'
+import { findPoolTxs } from './pool_tx.service'
 
 enum TransactionType {
 	issuance = 'issuance',
@@ -66,7 +68,7 @@ export const createPoolTxHandler = async (
 	const receiver_user_id = request.body.receiver_user_id
 	const jwt_user = request.user
 
-	let data: CreatePoolTxInput | null
+	let data: CreatePoolTxInput
 
 	try {
 		const receiver_user = await getUserReceiver(jwt_user.system_id, receiver_user_id)
@@ -94,4 +96,11 @@ export const createPoolTxHandler = async (
 		console.error(err)
 		return reply.code(500).send(err)
 	}
+}
+
+export const getPoolTxsHandler = async (
+	request: FastifyRequest<{ Params: { system_id: string } }>
+) => {
+	const poolTxs = await findPoolTxs({ system_id: request.params.system_id })
+	return poolTxs
 }

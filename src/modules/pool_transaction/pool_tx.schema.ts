@@ -12,16 +12,16 @@ const poolTxCommon = {
 	status: z.enum(['processing', 'discarded'], getZodErrObject('Status'))
 }
 
-const CreatePoolTxBodySchema = z.object({
+const createPoolTxBodySchema = z.object({
 	value: z.number(getZodErrObject('Number')),
 	receiver_user_id: z.string(getZodErrObject('Receiver User ID'))
 })
 
-const CreatePoolTxSchema = z.object({
+const createPoolTxSchema = z.object({
 	...poolTxCommon
 })
 
-const CreatePoolTxResponseSchema = z.object({
+const createPoolTxResponseSchema = z.object({
 	...poolTxCommon,
 	id: z.string(getZodErrObject('ID'))
 })
@@ -33,14 +33,14 @@ const poolTxResponseSchema = z.object({
 
 const poolTxsResponseSchema = z.array(poolTxResponseSchema)
 
-export type CreatePoolTxInput = z.infer<typeof CreatePoolTxSchema>
-export type CreatePoolTxBodyInput = z.infer<typeof CreatePoolTxBodySchema>
+export type CreatePoolTxInput = z.infer<typeof createPoolTxSchema>
+export type CreatePoolTxBodyInput = z.infer<typeof createPoolTxBodySchema>
 
 export const { schemas: poolTxSchemas, $ref } = buildJsonSchemas(
 	{
-		CreatePoolTxSchema,
-		CreatePoolTxBodySchema,
-		CreatePoolTxResponseSchema,
+		createPoolTxSchema,
+		createPoolTxBodySchema,
+		createPoolTxResponseSchema,
 		poolTxResponseSchema,
 		poolTxsResponseSchema
 	},
