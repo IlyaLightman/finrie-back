@@ -7,6 +7,7 @@ import { userSchemas } from './modules/user/user.schema'
 import { poolTxSchemas } from './modules/pool_transaction/pool_tx.schema'
 import { findUser } from './modules/user/user.service'
 import { findSystem } from './modules/system/system.service'
+import { checkSystem, checkUser } from './utils/decorateChecks'
 
 export const server = Fastify()
 
@@ -17,6 +18,8 @@ declare module 'fastify' {
 	}
 	export interface FastifyInstance {
 		authenticate: any
+		checkSystem: any
+		checkUser: any
 		jwt: any
 	}
 }
@@ -45,6 +48,9 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 		return reply.send(err)
 	}
 })
+
+server.decorate('checkSystem', checkSystem)
+server.decorate('checkUser', checkUser)
 
 const main = async () => {
 	systemSchemas.forEach(schema => server.addSchema(schema))
