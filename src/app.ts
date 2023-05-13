@@ -4,12 +4,15 @@ import systemRoutes from './modules/system/system.route'
 import userRoutes from './modules/user/user.route'
 import { systemSchemas } from './modules/system/system.schema'
 import { userSchemas } from './modules/user/user.schema'
+import { findUser } from './modules/user/user.service'
+import { findSystem } from './modules/system/system.service'
 
 export const server = Fastify()
 
 declare module 'fastify' {
 	interface FastifyRequest {
 		jwtVerify: any
+		user: any
 	}
 	export interface FastifyInstance {
 		authenticate: any
@@ -24,6 +27,17 @@ server.register(require('@fastify/jwt'), {
 server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
 	try {
 		await request.jwtVerify()
+
+		if (request.user?.role === 'user') {
+			request.user = await findUser({
+				system_id: request.user.system_id,
+				id: request.user.id
+			})
+		} else if (request.user?.role === 'system') {
+			request.user = await findSystem({
+				id: request.user.system_id
+			})
+		}
 	} catch (err) {
 		return reply.send(err)
 	}
@@ -36,10 +50,10 @@ const main = async () => {
 	server.register(userRoutes, { prefix: '/user' })
 
 	try {
-		const address = process.env.ADDRESS || '0.0.0.0'
-		const port = process.env.PORT || 3000
-		await server.listen(port, address)
-		console.log(`Server listening on ${address}:${port}`)
+		const host = process.env.ADDRESS || '0.0.0.0'
+		const port = Number(process.env.PORT || 3000)
+		await server.listen({ port, host })
+		console.log(`Server listening on ${host}:${port}`)
 	} catch (err) {
 		console.error(err)
 		process.exit(1)

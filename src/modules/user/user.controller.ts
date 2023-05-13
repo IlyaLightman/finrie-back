@@ -47,7 +47,11 @@ export const loginUserHandler = async (
 	const isPasswordCorrect = await verifyPassword(body.password, user.password_hash)
 	if (isPasswordCorrect) {
 		const { password_hash, ...data } = user
-		const toSign = { id: data.user_id, role: 'user' }
+		const toSign = {
+			system_id: data.system_id,
+			user_id: data.user_id,
+			role: 'user'
+		}
 
 		return { accessToken: server.jwt.sign(toSign) }
 	}
