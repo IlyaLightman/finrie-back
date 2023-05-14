@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 
 import { $ref } from './tx.schema'
-import { getTxHandler, getTxsHandler } from './tx.controller'
+import { getTxHandler, getTxsHandler, getTxsUserHandler } from './tx.controller'
 
 const txRoute = async (server: FastifyInstance) => {
 	server.get(
@@ -16,14 +16,25 @@ const txRoute = async (server: FastifyInstance) => {
 	)
 
 	server.get(
-		'/',
+		'/server',
 		{
-			preHandler: [server.authenticate],
+			preHandler: [server.authenticate, server.checkSystem],
 			schema: {
 				response: { 200: $ref('txsResponseSchema') }
 			}
 		},
 		getTxsHandler
+	)
+
+	server.get(
+		'/',
+		{
+			preHandler: [server.authenticate, server.checkUser],
+			schema: {
+				response: { 200: $ref('txsResponseSchema') }
+			}
+		},
+		getTxsUserHandler
 	)
 }
 

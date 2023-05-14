@@ -103,10 +103,9 @@ export const createPoolTxHandler = async (
 	}
 }
 
-export const getPoolTxsHandler = async (
-	request: FastifyRequest<{ Params: { system_id: string } }>
-) => {
-	return await findPoolTxs({ system_id: request.params.system_id })
+export const getPoolTxsHandler = async (request: FastifyRequest) => {
+	const { system_id } = request.user
+	return await findPoolTxs({ system_id })
 }
 
 export const getPoolTxsOfUserHandler = async (request: FastifyRequest) => {
