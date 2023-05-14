@@ -9,7 +9,7 @@ import {
 
 const poolTxRoutes = async (server: FastifyInstance) => {
 	server.post(
-		'/',
+		'/:id',
 		{
 			schema: {
 				body: $ref('createPoolTxSchema'),
@@ -20,7 +20,7 @@ const poolTxRoutes = async (server: FastifyInstance) => {
 	)
 
 	server.get(
-		'/:system_id/',
+		'/',
 		{
 			preHandler: [server.authenticate],
 			schema: {

@@ -1,6 +1,16 @@
 import prisma from '../../utils/prisma'
-import { getUserReceiver } from './../receiver'
-import { getUserSender } from './../sender'
+import { getUserReceiver } from '../receiver'
+import { getUserSender } from '../sender'
+
+export const getTransaction = async (system_id: string, transaction_id: string) => {
+	return await prisma.transaction.findFirst({ where: { system_id, transaction_id } })
+}
+
+export const getTransactions = async (system_id: string) => {
+	return await prisma.transaction.findMany({
+		where: { system_id }
+	})
+}
 
 export const getUserTransactions = async ({
 	system_id,

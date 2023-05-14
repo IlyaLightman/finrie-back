@@ -1,17 +1,17 @@
 ## Backend for Finrie
 
-*Stack: Typescript, Fastify, Prisma, PostgreSQL*
+*Stack: Typescript, Fastify, Zod, Prisma, PostgreSQL*
 
-In Finrie, it is possible to create 'local financial systems' in which users can register. The administrator can then issue coins to users and they can transfer them to each other
+In **Finrie**, it is possible to create 'local financial systems' in which users can register. The administrator can then issue coins to users and they can transfer them to each other
 
 Coins are exchanged between users through transactions. First, they go into the transaction pool (an entry is created in the "transactions_pool" table), which is constantly monitored and from which they are registered (an entry is created in the "transactions" table)
 
-Run Dev: `npm run dev`
+**Run Dev:** `npm run dev`
 
 ### Database Schema
 ![Schema](https://s1.hostingkartinok.com/uploads/images/2023/05/5601d880da9175d663059eef6f74e42e.png)
 
-Migrate: `npx prisma migrate dev --name <name>`
+**Migrate:** `npx prisma migrate dev --name <name>`
 
 ##### System
 It is an aforementioned 'local financial system'. Registering a system is essentially the same as registering a user who can only operate it (set up issuance, hand out coins, accept participants)
@@ -52,3 +52,7 @@ A weekly report on the movement of coins in the system. It is created every week
 - `POST /pool_tx` - Create a pool transaction (if you log in as a system, then the sender will be the system, if you log in as a user, then the sender will be the user) (*auth*)
 - `GET /pool_tx/:system_id` - Get all pool transactions of system (*auth*)
 - `GET /pool_tx` - Get all pool transactions of authenticated user where he is the sender or recipient (*auth user*)
+
+##### Transaction
+- `GET /tx/:id` - Get transaction of auth system (*auth*)
+- `GET /tx` - Get all transactions of auth system (*auth*)

@@ -1,0 +1,30 @@
+import { z } from 'zod'
+import { buildJsonSchemas } from 'fastify-zod'
+
+import { getZodErrObject } from '../../utils/schema'
+
+const txCommon = {
+	transaction_id: z.string(getZodErrObject('Transaction ID')),
+	type: z.enum(['issuance', 'transfer'], getZodErrObject('Type')),
+	value: z.number(getZodErrObject('Number')),
+	system_id: z.string(getZodErrObject('System ID')),
+	sender_id: z.string(getZodErrObject('Sender ID')),
+	receiver_id: z.string(getZodErrObject('Receiver ID')),
+	created_at: z.string(getZodErrObject('Created At')),
+	hash: z.string(getZodErrObject('Hash')),
+	prev_hash: z.string(getZodErrObject('Previous Hash'))
+}
+
+const txResponseSchema = z.object({
+	...txCommon
+})
+
+const txsResponseSchema = z.array(txResponseSchema)
+
+export const { schemas: poolTxSchemas, $ref } = buildJsonSchemas(
+	{
+		txResponseSchema,
+		txsResponseSchema
+	},
+	{ $id: 'tx' }
+)

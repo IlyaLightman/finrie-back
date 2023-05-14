@@ -94,8 +94,7 @@ CREATE TABLE "transactions" (
     "system_id" UUID NOT NULL,
     "sender_id" UUID NOT NULL,
     "receiver_id" UUID NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
-    "accepted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "hash" TEXT NOT NULL,
     "prev_hash" TEXT NOT NULL,
 

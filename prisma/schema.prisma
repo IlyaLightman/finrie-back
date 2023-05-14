@@ -131,8 +131,7 @@ model Transaction {
   sender Sender @relation(fields: [sender_id], references: [sender_id])
   receiver_id String @db.Uuid
   receiver Receiver @relation(fields: [receiver_id], references: [receiver_id])
-  created_at DateTime
-  accepted_at DateTime @default(now())
+  created_at DateTime @default(now())
   hash String
   prev_hash String
 }

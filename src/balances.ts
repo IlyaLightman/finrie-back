@@ -1,4 +1,4 @@
-import { calcUserBalanceByTransactions } from './modules/transactions/transaction.service'
+import { calcUserBalanceByTransactions } from './modules/transactions/tx.service'
 
 export const getUserBalance = async (system_id: string, user_id: string): Promise<number> => {
 	// todo: + weekly_statements
