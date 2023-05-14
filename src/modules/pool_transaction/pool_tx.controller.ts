@@ -114,7 +114,9 @@ export const getPoolTxsHandler = async (request: FastifyRequest) => {
 	return await getPoolTxs({ system_id })
 }
 
-export const getPoolTxsOfUserHandler = async (request: FastifyRequest) => {
+export const getPoolTxsOfUserHandler = async (request: FastifyRequest, reply: FastifyReply) => {
 	const { system_id, user_id } = request.user
+	if (!user_id) return reply.status(400).send({ message: 'user_id is required' })
+
 	return await getPoolTxsOfUser(system_id, user_id)
 }

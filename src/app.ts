@@ -8,16 +8,25 @@ import { systemSchemas } from './modules/system/system.schema'
 import { userSchemas } from './modules/user/user.schema'
 import { poolTxSchemas } from './modules/pool_transaction/pool_tx.schema'
 
-import { findUser } from './modules/user/user.service'
-import { findSystem } from './modules/system/system.service'
 import { checkSystem, checkUser } from './utils/decorateChecks'
+
+enum Role {
+	user = 'user',
+	system = 'system'
+}
 
 export const server = Fastify()
 
 declare module 'fastify' {
 	interface FastifyRequest {
 		jwtVerify: any
-		user: any
+		user: {
+			id?: string
+			role: Role
+			system_id: string
+			user_id?: string
+			iat?: number
+		}
 	}
 	export interface FastifyInstance {
 		authenticate: any
@@ -35,17 +44,17 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 	try {
 		await request.jwtVerify()
 
-		if (request.user?.role === 'user') {
-			const user = await findUser({
+		if (request.user?.role === Role.user) {
+			request.user = {
 				system_id: request.user.system_id,
-				id: request.user.id
-			})
-			request.user = { ...user, role: 'user' }
-		} else if (request.user?.role === 'system') {
-			const system = await findSystem({
-				id: request.user.system_id
-			})
-			request.user = { ...system, role: 'system' }
+				user_id: request.user.user_id,
+				role: Role.user
+			}
+		} else if (request.user?.role === Role.system) {
+			request.user = {
+				system_id: request.user.system_id,
+				role: Role.system
+			}
 		}
 	} catch (err) {
 		return reply.send(err)

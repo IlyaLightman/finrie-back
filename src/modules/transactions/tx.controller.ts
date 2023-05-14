@@ -1,4 +1,4 @@
-import { FastifyRequest } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { getTransaction, getTransactions, getUserTransactions } from './tx.service'
 
 export const getTxHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
@@ -12,7 +12,9 @@ export const getTxsHandler = async (request: FastifyRequest) => {
 	return await getTransactions(system_id)
 }
 
-export const getTxsUserHandler = async (request: FastifyRequest) => {
+export const getTxsUserHandler = async (request: FastifyRequest, reply: FastifyReply) => {
 	const { system_id, user_id } = request.user
+	if (!user_id) return reply.status(400).send({ message: 'user_id is required' })
+
 	return await getUserTransactions({ system_id, user_id })
 }
