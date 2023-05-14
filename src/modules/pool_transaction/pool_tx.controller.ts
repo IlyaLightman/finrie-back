@@ -2,13 +2,13 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 
 import { CreatePoolTxBodyInput, CreatePoolTxInput } from './pool_tx.schema'
 
-import { createPoolTx, findPoolTxsOfUser } from './pool_tx.service'
+import { createPoolTx, getPoolTxsOfUser, getPoolTx } from './pool_tx.service'
 import { getUserSender } from '../sender'
 import { getSystemSender } from '../sender'
 import { getCurrentIssuanceLimit } from '../system/system.service'
 import { getUserBalance } from '../../balances'
 import { getUserReceiver } from '../receiver'
-import { findPoolTxs } from './pool_tx.service'
+import { getPoolTxs } from './pool_tx.service'
 
 enum TransactionType {
 	issuance = 'issuance',
@@ -103,12 +103,18 @@ export const createPoolTxHandler = async (
 	}
 }
 
+export const getPoolTxHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
+	const { id } = request.params
+	const { system_id } = request.user
+	return await getPoolTx(system_id, id)
+}
+
 export const getPoolTxsHandler = async (request: FastifyRequest) => {
 	const { system_id } = request.user
-	return await findPoolTxs({ system_id })
+	return await getPoolTxs({ system_id })
 }
 
 export const getPoolTxsOfUserHandler = async (request: FastifyRequest) => {
 	const { system_id, user_id } = request.user
-	return await findPoolTxsOfUser(system_id, user_id)
+	return await getPoolTxsOfUser(system_id, user_id)
 }

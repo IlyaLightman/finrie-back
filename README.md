@@ -50,10 +50,11 @@ A weekly report on the movement of coins in the system. It is created every week
 
 ##### Pool Transaction
 - `POST /pool_tx` - Create a pool transaction (if you log in as a system, then the sender will be the system, if you log in as a user, then the sender will be the user) (*auth*)
-- `GET /pool_tx/system` - Get all pool transactions of authenticated system (*auth system*)
+- `GET /pool_tx/:id` - Get pool transaction of auth system (*auth*)
+- `GET /pool_tx/system` - Get all pool transactions of authenticated system (or system of authenticated user) (*auth*)
 - `GET /pool_tx` - Get all pool transactions of authenticated user where he is the sender or recipient (*auth user*)
 
 ##### Transaction
 - `GET /tx/:id` - Get transaction of auth system (*auth*)
-- `GET /tx/system` - Get all transactions of authenticated system (*auth system*)
+- `GET /tx/system` - Get all transactions of authenticated system (or system of authenticated user) (*auth*)
 - `GET /tx` - Get all transactions of authenticated user where he is the sender or recipient (*auth user*)

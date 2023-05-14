@@ -22,7 +22,14 @@ const findSelect = {
 	created_at: true
 }
 
-export const findPoolTxs = async ({
+export const getPoolTx = async (system_id: string, pool_transaction_id: string) => {
+	return await prisma.poolTransaction.findFirst({
+		where: { system_id, pool_transaction_id },
+		select: findSelect
+	})
+}
+
+export const getPoolTxs = async ({
 	system_id,
 	sender_id,
 	receiver_id
@@ -37,7 +44,7 @@ export const findPoolTxs = async ({
 	})
 }
 
-export const findPoolTxsOfUser = async (system_id: string, user_id: string) => {
+export const getPoolTxsOfUser = async (system_id: string, user_id: string) => {
 	return await prisma.poolTransaction.findMany({
 		where: { system_id, OR: [{ sender_id: user_id }, { receiver_id: user_id }] },
 		select: findSelect

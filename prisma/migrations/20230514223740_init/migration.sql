@@ -74,7 +74,7 @@ CREATE TABLE "weekly_statements" (
 
 -- CreateTable
 CREATE TABLE "transactions_pool" (
-    "pool_transactions_id" UUID NOT NULL,
+    "pool_transaction_id" UUID NOT NULL,
     "type" "TransactionType" NOT NULL,
     "value" INTEGER NOT NULL,
     "system_id" UUID NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE "transactions_pool" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" "PoolTransactionStatus" NOT NULL DEFAULT 'processing',
 
-    CONSTRAINT "transactions_pool_pkey" PRIMARY KEY ("pool_transactions_id")
+    CONSTRAINT "transactions_pool_pkey" PRIMARY KEY ("pool_transaction_id")
 );
 
 -- CreateTable

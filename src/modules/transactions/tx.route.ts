@@ -18,7 +18,7 @@ const txRoute = async (server: FastifyInstance) => {
 	server.get(
 		'/server',
 		{
-			preHandler: [server.authenticate, server.checkSystem],
+			preHandler: [server.authenticate],
 			schema: {
 				response: { 200: $ref('txsResponseSchema') }
 			}

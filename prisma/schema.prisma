@@ -106,7 +106,7 @@ enum PoolTransactionStatus {
 model PoolTransaction {
   @@map("transactions_pool")
 
-  pool_transactions_id String @db.Uuid @id @default(uuid())
+  pool_transaction_id String @db.Uuid @id @default(uuid())
   type TransactionType
   value Int
   system_id String @db.Uuid
