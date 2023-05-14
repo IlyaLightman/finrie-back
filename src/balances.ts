@@ -1,10 +1,6 @@
-import { getUserReceiver } from './modules/receiver'
-import { getUserSender } from './modules/sender'
+import { calcUserBalanceByTransactions } from './modules/transactions/transaction.service'
 
-export const getUserBalance = async (system_id: string, user_id: string) => {
-	const sender = await getUserSender(system_id, user_id)
-	const receiver = await getUserReceiver(system_id, user_id)
-
-	// todo: calc all transactions + weekly_statements
-	return 0
+export const getUserBalance = async (system_id: string, user_id: string): Promise<number> => {
+	// todo: + weekly_statements
+	return await calcUserBalanceByTransactions(system_id, user_id)
 }

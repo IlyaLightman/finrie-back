@@ -8,7 +8,6 @@ import { getSystemSender } from '../sender'
 import { getCurrentIssuanceLimit } from '../system/system.service'
 import { getUserBalance } from '../../balances'
 import { getUserReceiver } from '../receiver'
-import { get } from 'http'
 import { findPoolTxs } from './pool_tx.service'
 
 enum TransactionType {
@@ -21,7 +20,17 @@ enum PoolTransactionStatus {
 	discarded = 'discarded'
 }
 
-const getValidatedPoolTxDataForUser = async (value: number, jwt_user: any, reply: FastifyReply) => {
+const getValidatedPoolTxDataForUser = async (
+	request: FastifyRequest<{ Body: CreatePoolTxBodyInput }>,
+	jwt_user: any,
+	reply: FastifyReply
+) => {
+	if (request.body.receiver_user_id === jwt_user.user_id) {
+		return reply.code(401).send({ message: 'Cannot send to yourself' })
+	}
+
+	const value = request.body.value
+
 	const sender = await getUserSender(jwt_user.system_id, jwt_user.user_id)
 	if (!sender) return reply.code(401).send({ message: 'No user sender' })
 
@@ -40,10 +49,12 @@ const getValidatedPoolTxDataForUser = async (value: number, jwt_user: any, reply
 }
 
 const getValidatedPoolTxDataForSystem = async (
-	value: number,
+	request: FastifyRequest<{ Body: CreatePoolTxBodyInput }>,
 	jwt_user: any,
 	reply: FastifyReply
 ) => {
+	const value = request.body.value
+
 	const sender = await getSystemSender(jwt_user.system_id)
 	if (!sender) return reply.code(401).send({ message: 'No system sender' })
 
@@ -71,23 +82,17 @@ export const createPoolTxHandler = async (
 	let data: CreatePoolTxInput
 
 	try {
+		if (request.body.value <= 0) return reply.code(401).send({ message: 'Invalid value' })
+
 		const receiver_user = await getUserReceiver(jwt_user.system_id, receiver_user_id)
 		if (!receiver_user) return reply.code(401).send({ message: 'No receiver for user' })
 		const receiver_id = receiver_user.receiver_id
 
 		if (jwt_user.role === 'user') {
-			const dataForUser = await getValidatedPoolTxDataForUser(
-				request.body.value,
-				jwt_user,
-				reply
-			)
+			const dataForUser = await getValidatedPoolTxDataForUser(request, jwt_user, reply)
 			data = { ...dataForUser, receiver_id }
 		} else if (jwt_user.role === 'system') {
-			const dataForSystem = await getValidatedPoolTxDataForSystem(
-				request.body.value,
-				jwt_user,
-				reply
-			)
+			const dataForSystem = await getValidatedPoolTxDataForSystem(request, jwt_user, reply)
 			data = { ...dataForSystem, receiver_id }
 		} else return reply.code(401).send({ message: 'Unavailable token' })
 
