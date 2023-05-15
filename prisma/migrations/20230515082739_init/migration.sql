@@ -18,7 +18,6 @@ CREATE TABLE "systems" (
     "issuance_restriction" TEXT NOT NULL,
     "issuance_current_limit" INTEGER NOT NULL,
     "issuance_rule" TEXT,
-    "kyc_fields" JSONB NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "password_hash" TEXT NOT NULL,
     "hash" TEXT NOT NULL,
@@ -31,8 +30,6 @@ CREATE TABLE "users" (
     "user_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "system_id" UUID NOT NULL,
-    "kyc_data" JSONB NOT NULL,
-    "status" TEXT NOT NULL,
     "password_hash" TEXT NOT NULL,
     "registered_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

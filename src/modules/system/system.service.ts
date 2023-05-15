@@ -24,7 +24,6 @@ const findSelect = {
 	issuance_restriction: true,
 	issuance_current_limit: true,
 	issuance_rule: true,
-	kyc_fields: true,
 	created_at: true,
 	hash: true
 }

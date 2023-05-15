@@ -16,7 +16,6 @@ model System {
   issuance_restriction String
   issuance_current_limit Int
   issuance_rule String?
-  kyc_fields Json
   created_at DateTime @default(now())
   password_hash String
   hash String
@@ -35,8 +34,6 @@ model User {
   name String @unique
   system_id String @db.Uuid
   system System @relation(fields: [system_id], references: [system_id])
-  kyc_data Json
-  status String
   password_hash String
   registered_at DateTime @default(now())
   weekly_statements WeeklyStatement[]

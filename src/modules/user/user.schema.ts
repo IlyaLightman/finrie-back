@@ -5,9 +5,7 @@ import { getZodErrObject } from '../../utils/schema'
 
 const userCommon = {
 	name: z.string(getZodErrObject('Name')),
-	system_id: z.string(getZodErrObject('System ID')),
-	kyc_data: z.object({}).catchall(z.string()),
-	status: z.string(getZodErrObject('Status'))
+	system_id: z.string(getZodErrObject('System ID'))
 }
 
 const createUserSchema = z.object({

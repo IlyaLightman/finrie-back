@@ -8,8 +8,7 @@ const systemCommon = {
 	description: z.string(getZodErrObject('Description')),
 	issuance_restriction: z.string(getZodErrObject('Issuance restriction')),
 	issuance_current_limit: z.number(getZodErrObject('Issuance current limit', 'number')),
-	issuance_rule: z.string(getZodErrObject('Issuance rule')),
-	kyc_fields: z.object({}).catchall(z.string())
+	issuance_rule: z.string(getZodErrObject('Issuance rule'))
 }
 
 const createSystemSchema = z.object({

@@ -58,3 +58,7 @@ A weekly report on the movement of coins in the system. It is created every week
 - `GET /tx/:id` - Get transaction of auth system (*auth*)
 - `GET /tx/system` - Get all transactions of authenticated system (or system of authenticated user) (*auth*)
 - `GET /tx` - Get all transactions of authenticated user where he is the sender or recipient (*auth user*)
+
+### Nice to have
+- KYC Fields for user, user accepting by system creator (removed for the first version)
+- Orders/Promises system

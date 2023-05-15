@@ -20,8 +20,6 @@ const findSelect = {
 	user_id: true,
 	name: true,
 	system_id: true,
-	kyc_data: true,
-	status: true,
 	registered_at: true
 }
 
