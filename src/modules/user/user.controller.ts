@@ -5,6 +5,7 @@ import { createUser, findUser, findUsers } from './user.service'
 import { CreateUserInput, LoginUserInput } from './user.schema'
 import { createSender } from '../sender'
 import { createReceiver } from '../receiver'
+import { getUserBalance as getBalance } from '../../balances'
 
 import { server } from './../../app'
 
@@ -79,4 +80,11 @@ export const getUsersHandler = async (
 ) => {
 	const users = await findUsers({ system_id: request.params.system_id })
 	return users
+}
+
+export const getUserBalance = async (request: FastifyRequest, reply: FastifyReply) => {
+	const { system_id, user_id } = request.user
+	if (!system_id || !user_id) return reply.code(401).send({ message: 'Unavailable JWT' })
+	const balance = await getBalance(system_id, user_id)
+	return balance
 }

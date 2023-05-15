@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 import { verifyPassword } from '../../utils/hash'
-import { createSystem, findSystem, findSystems } from './system.service'
+import { createSystem, findSystem, findSystems, getCurrentIssuanceLimit } from './system.service'
 import { CreateSystemInput, LoginSystemInput } from './system.schema'
 
 import { server } from './../../app'
@@ -59,4 +59,9 @@ export const getSystemHandler = async (request: FastifyRequest<{ Params: { id: s
 export const getSystemsHandler = async () => {
 	const systems = await findSystems()
 	return systems
+}
+
+export const getSystemIssuance = async (request: FastifyRequest) => {
+	const { system_id } = request.user
+	return await getCurrentIssuanceLimit(system_id)
 }

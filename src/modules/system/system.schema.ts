@@ -38,6 +38,8 @@ const systemResponseSchema = z.object({
 
 const systemsResponseSchema = z.array(systemResponseSchema)
 
+const systemIssuanceSchema = z.number()
+
 export type CreateSystemInput = z.infer<typeof createSystemSchema>
 
 export type LoginSystemInput = z.infer<typeof loginSystemSchema>
@@ -49,7 +51,8 @@ export const { schemas: systemSchemas, $ref } = buildJsonSchemas(
 		loginSystemSchema,
 		loginSystemResponseSchema,
 		systemResponseSchema,
-		systemsResponseSchema
+		systemsResponseSchema,
+		systemIssuanceSchema
 	},
 	{ $id: 'system' }
 )
