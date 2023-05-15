@@ -65,20 +65,18 @@ export const loginUserHandler = async (
 	return reply.code(401).send({ message: 'The password is incorrect' })
 }
 
-export const getUserHandler = async (
-	request: FastifyRequest<{ Params: { system_id: string; id: string } }>
-) => {
+export const getUserHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
+	const { system_id } = request.user
 	const user = await findUser({
-		system_id: request.params.system_id,
+		system_id,
 		id: request.params.id
 	})
 	return user
 }
 
-export const getUsersHandler = async (
-	request: FastifyRequest<{ Params: { system_id: string } }>
-) => {
-	const users = await findUsers({ system_id: request.params.system_id })
+export const getUsersHandler = async (request: FastifyRequest) => {
+	const { system_id } = request.user
+	const users = await findUsers({ system_id })
 	return users
 }
 
