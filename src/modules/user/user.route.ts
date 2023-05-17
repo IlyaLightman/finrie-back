@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify'
 
 import { $ref } from './user.schema'
 import {
+	getAuthUserHandler,
 	getUserBalance,
 	getUserHandler,
 	getUsersHandler,
@@ -33,7 +34,18 @@ const userRoutes = async (server: FastifyInstance) => {
 	)
 
 	server.get(
-		'/:system_id/:id',
+		'/',
+		{
+			preHandler: [server.authenticate, server.checkUser],
+			schema: {
+				response: { 200: $ref('userResponseSchema') }
+			}
+		},
+		getAuthUserHandler
+	)
+
+	server.get(
+		'/:id',
 		{
 			preHandler: [server.authenticate],
 			schema: {
@@ -44,7 +56,7 @@ const userRoutes = async (server: FastifyInstance) => {
 	)
 
 	server.get(
-		'/:system_id',
+		'/users',
 		{
 			preHandler: [server.authenticate],
 			schema: {

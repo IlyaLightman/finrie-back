@@ -6,6 +6,7 @@ import { CreateSystemInput, LoginSystemInput } from './system.schema'
 
 import { server } from './../../app'
 import { createSender } from '../sender'
+import { request } from 'http'
 
 export const registerSystemHandler = async (
 	request: FastifyRequest<{ Body: CreateSystemInput }>,
@@ -49,6 +50,12 @@ export const loginSystemHandler = async (
 	}
 
 	return reply.code(401).send({ message: 'The password is incorrect' })
+}
+
+export const getAuthSystemHandler = async (request: FastifyRequest) => {
+	const { system_id } = request.user
+	const system = await findSystem({ id: system_id })
+	return system
 }
 
 export const getSystemHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {

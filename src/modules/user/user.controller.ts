@@ -65,6 +65,15 @@ export const loginUserHandler = async (
 	return reply.code(401).send({ message: 'The password is incorrect' })
 }
 
+export const getAuthUserHandler = async (request: FastifyRequest) => {
+	const { system_id, user_id } = request.user
+	const user = await findUser({
+		system_id,
+		id: user_id
+	})
+	return user
+}
+
 export const getUserHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
 	const { system_id } = request.user
 	const user = await findUser({
