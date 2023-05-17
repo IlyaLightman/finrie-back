@@ -24,16 +24,27 @@ const findSelect = {
 }
 
 export const findUser = async ({
+	system_name,
 	system_id,
 	name,
 	id,
 	withPassword = false
 }: {
-	system_id: string
+	system_name?: string
+	system_id?: string
 	name?: string
 	id?: string
 	withPassword?: boolean
 }) => {
+	if (!system_id && !system_name) {
+		console.error('findUser: system_id or system_name is required')
+		return null
+	}
+
+	if (system_name) {
+		system_id = (await prisma.system.findFirst({ where: { name: system_name } }))?.system_id
+	}
+
 	return await prisma.user.findFirst({
 		where: name ? { system_id, name } : { system_id, user_id: id },
 		select: { ...findSelect, ...(withPassword ? { password_hash: true } : {}) }

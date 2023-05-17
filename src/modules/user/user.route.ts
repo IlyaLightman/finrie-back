@@ -15,7 +15,7 @@ const userRoutes = async (server: FastifyInstance) => {
 		'/',
 		{
 			schema: {
-				body: $ref('createUserSchema'),
+				body: $ref('createUserRequestSchema'),
 				response: { 201: $ref('createUserResponseSchema') }
 			}
 		},
@@ -26,7 +26,7 @@ const userRoutes = async (server: FastifyInstance) => {
 		'/login',
 		{
 			schema: {
-				body: $ref('loginUserSchema'),
+				body: $ref('loginUserRequestSchema'),
 				response: { 201: $ref('loginUserResponseSchema') }
 			}
 		},

@@ -2,29 +2,39 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 
 import { verifyPassword } from '../../utils/hash'
 import { createUser, findUser, findUsers } from './user.service'
-import { CreateUserInput, LoginUserInput } from './user.schema'
+import { CreateUserRequestInput, LoginUserRequestSchema } from './user.schema'
 import { createSender } from '../sender'
 import { createReceiver } from '../receiver'
 import { getUserBalance as getBalance } from '../../balances'
 
 import { server } from './../../app'
+import { findSystem } from '../system/system.service'
 
 export const registerUserHandler = async (
-	request: FastifyRequest<{ Body: CreateUserInput }>,
+	request: FastifyRequest<{ Body: CreateUserRequestInput }>,
 	reply: FastifyReply
 ) => {
 	const body = request.body
 
 	try {
 		const existing_user = await findUser({
-			system_id: body.system_id,
+			system_name: body.system_name,
 			name: body.name
 		})
 		if (existing_user) {
 			return reply.code(401).send({ message: 'User with this name already exists' })
 		}
 
-		const user = await createUser(body)
+		const system = await findSystem({ name: body.system_name })
+		if (!system) {
+			return reply.code(401).send({ message: "There isn't system with provided name" })
+		}
+
+		const user = await createUser({
+			system_id: system.system_id,
+			name: body.name,
+			password: body.password
+		})
 		await createSender({ system_id: user.system_id, user_id: user.user_id })
 		await createReceiver({ system_id: user.system_id, user_id: user.user_id })
 
@@ -36,13 +46,13 @@ export const registerUserHandler = async (
 }
 
 export const loginUserHandler = async (
-	request: FastifyRequest<{ Body: LoginUserInput }>,
+	request: FastifyRequest<{ Body: LoginUserRequestSchema }>,
 	reply: FastifyReply
 ) => {
 	const body = request.body
 
 	const user = await findUser({
-		system_id: body.system_id,
+		system_name: body.system_name,
 		name: body.name,
 		withPassword: true
 	})
@@ -67,11 +77,15 @@ export const loginUserHandler = async (
 
 export const getAuthUserHandler = async (request: FastifyRequest) => {
 	const { system_id, user_id } = request.user
+	const system = await findSystem({ id: system_id })
 	const user = await findUser({
 		system_id,
 		id: user_id
 	})
-	return user
+
+	if (!user || !system) return null
+
+	return { ...user, system_name: system.name }
 }
 
 export const getUserHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
