@@ -6,6 +6,8 @@ In **Finrie**, it is possible to create 'local financial systems' in which users
 
 Coins are exchanged between users through transactions. First, they go into the transaction pool (an entry is created in the "transactions_pool" table), which is constantly monitored and from which they are registered (an entry is created in the "transactions" table)
 
+**Frontend**: [Finrie Front Repository](https://github.com/IlyaLightman/finrie-front)
+
 **Run Dev:** `npm run dev`
 
 ### Database Schema
