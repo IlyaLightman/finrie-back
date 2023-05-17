@@ -1,4 +1,5 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
+import cors from '@fastify/cors'
 
 import systemRoutes from './modules/system/system.route'
 import userRoutes from './modules/user/user.route'
@@ -15,7 +16,9 @@ enum Role {
 	system = 'system'
 }
 
-export const server = Fastify()
+export const server = Fastify({
+	logger: true
+})
 
 declare module 'fastify' {
 	interface FastifyRequest {
@@ -35,6 +38,10 @@ declare module 'fastify' {
 		jwt: any
 	}
 }
+
+server.register(cors, {
+	origin: true
+})
 
 server.register(require('@fastify/jwt'), {
 	secret: process.env.SECRET

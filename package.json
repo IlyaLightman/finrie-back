@@ -9,6 +9,7 @@
   "author": "Ilya Zaytsev",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "^8.2.1",
     "@fastify/jwt": "^6.7.1",
     "@prisma/client": "^4.13.0",
     "@types/node": "^20.1.0",
