@@ -41,8 +41,9 @@ const loginUserResponseSchema = z.object({
 
 const userResponseSchema = z.object({
 	...userCommon,
-	system_name: z.string(),
-	user_id: z.string()
+	system_name: z.string().optional(),
+	user_id: z.string(),
+	registered_at: z.date()
 })
 
 const usersResponseSchema = z.array(userResponseSchema)

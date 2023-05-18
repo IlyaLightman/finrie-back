@@ -33,14 +33,19 @@ declare module 'fastify' {
 	}
 	export interface FastifyInstance {
 		authenticate: any
+		jwt: any
 		checkSystem: any
 		checkUser: any
-		jwt: any
 	}
 }
 
 server.register(cors, {
-	origin: true
+	origin: (origin, cb) => {
+		const hostname = new URL(origin || '').hostname
+
+		if (hostname === process.env.CORS_HOSTNAME) return cb(null, true)
+		cb(new Error('Not allowed'), false)
+	}
 })
 
 server.register(require('@fastify/jwt'), {

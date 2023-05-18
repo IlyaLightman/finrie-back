@@ -36,7 +36,7 @@ const systemRoutes = async (server: FastifyInstance) => {
 	server.get(
 		'/',
 		{
-			preHandler: [server.authenticate, server.checkSystem],
+			preHandler: [server.authenticate],
 			schema: {
 				response: { 200: $ref('systemResponseSchema') }
 			}
