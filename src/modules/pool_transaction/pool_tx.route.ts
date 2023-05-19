@@ -14,7 +14,7 @@ const poolTxRoutes = async (server: FastifyInstance) => {
 		{
 			preHandler: [server.authenticate],
 			schema: {
-				body: $ref('createPoolTxSchema'),
+				body: $ref('createPoolTxBodySchema'),
 				response: { 201: $ref('createPoolTxResponseSchema') }
 			}
 		},

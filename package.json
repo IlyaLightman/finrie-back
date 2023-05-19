@@ -7,6 +7,7 @@
     "dev": "tsnd --respawn --transpile-only --exit-child src/app.ts"
   },
   "author": "Ilya Zaytsev",
+  "repository": "https://github.com/IlyaLightman/finrie-back",
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^8.2.1",
