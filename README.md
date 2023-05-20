@@ -68,3 +68,4 @@ A weekly report on the movement of coins in the system. It is created every week
 ### Nice to have
 - KYC Fields for user, user accepting by system creator (removed for the first version)
 - Orders/Promises system
+- Pool transactions validators

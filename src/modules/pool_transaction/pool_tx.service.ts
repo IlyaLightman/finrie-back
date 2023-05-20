@@ -50,7 +50,8 @@ export const getPoolTxs = async ({
 }) => {
 	return await prisma.poolTransaction.findMany({
 		where: { system_id, sender_id, receiver_id },
-		select: findSelect
+		select: findSelect,
+		orderBy: { created_at: 'desc' }
 	})
 }
 
@@ -65,7 +66,8 @@ export const getPoolTxsOfUser = async (system_id: string, user_id: string) => {
 			system_id,
 			OR: [{ sender_id: sender.sender_id }, { receiver_id: receiver.receiver_id }]
 		},
-		select: findSelect
+		select: findSelect,
+		orderBy: { created_at: 'desc' }
 	})
 
 	return formPoolTransactions(pool_transactions, sender)

@@ -15,7 +15,8 @@ export const getTransaction = async (system_id: string, transaction_id: string) 
 
 export const getTransactions = async (system_id: string) => {
 	return await prisma.transaction.findMany({
-		where: { system_id }
+		where: { system_id },
+		orderBy: { created_at: 'desc' }
 	})
 }
 
@@ -43,7 +44,8 @@ export const getUserTransactions = async ({
 				gte: created_from,
 				lte: created_to
 			}
-		}
+		},
+		orderBy: { created_at: 'desc' }
 	})
 
 	return formTransactions(transactions, sender)

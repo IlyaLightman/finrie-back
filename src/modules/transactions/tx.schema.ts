@@ -18,7 +18,8 @@ const txCommon = {
 const txResponseSchema = z.object({
 	...txCommon,
 	transaction_id: z.string().optional(),
-	form: z.string().optional()
+	form: z.string().optional(),
+	created_at: z.string()
 })
 
 const txsResponseSchema = z.array(txResponseSchema)
