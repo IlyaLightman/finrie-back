@@ -3,29 +3,19 @@ import { CreatePoolTxInput } from './pool_tx.schema'
 
 import { getUserReceiver } from '../receiver'
 import { getUserSender } from '../sender'
-import { PoolTransactionStatus, Sender, TransactionType } from '@prisma/client'
+import { PoolTransaction, Sender } from '@prisma/client'
+
+interface poolTransactionUserName {
+	user: {
+		name: string
+	} | null
+}
 
 const formPoolTransactions = (
-	transactions: {
-		system_id: string
-		sender_id: string
-		receiver_id: string
-		created_at: Date
-		type: TransactionType
-		sender: {
-			user: {
-				name: string
-			} | null
-		}
-		receiver: {
-			user: {
-				name: string
-			} | null
-		}
-		pool_transaction_id: string
-		value: number
-		status: PoolTransactionStatus
-	}[],
+	transactions: (PoolTransaction & {
+		sender: poolTransactionUserName
+		receiver: poolTransactionUserName
+	})[],
 	sender: Sender
 ) =>
 	transactions.map(tx => ({

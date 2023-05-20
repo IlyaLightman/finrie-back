@@ -1,30 +1,16 @@
-import { Sender, TransactionType } from '@prisma/client'
+import { Sender, Transaction, TransactionType } from '@prisma/client'
 import prisma from '../../utils/prisma'
 import { getUserReceiver } from '../receiver'
 import { getUserSender } from '../sender'
 
+interface transactionUserName {
+	user: {
+		name: string
+	} | null
+}
+
 const formTransactions = (
-	transactions: {
-		receiver: {
-			user: {
-				name: string
-			} | null
-		}
-		sender: {
-			user: {
-				name: string
-			} | null
-		}
-		type: TransactionType
-		value: number
-		system_id: string
-		sender_id: string
-		receiver_id: string
-		created_at: Date
-		transaction_id: string
-		hash: string
-		prev_hash: string
-	}[],
+	transactions: (Transaction & { sender: transactionUserName; receiver: transactionUserName })[],
 	sender: Sender
 ) =>
 	transactions.map(tx => ({
