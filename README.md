@@ -41,16 +41,16 @@ A weekly report on the movement of coins in the system. It is created every week
 ##### System
 - `POST /system` - Register a system
 - `POST /system/login` - Login to the system
-- `GET /system` - Get authenticated system (*auth system*)
-- `GET /system/:id` - Get system by id (*auth*)
+- `GET /system/:find?findBy=` - Get system by id/name
+- `GET /system` - Get authenticated system (*auth*)
 - `GET /system/systems` - Get all systems (*auth*)
 - `GET /system/issuance` - Get free issuance of authenticated system (*auth system*)
 
 ##### User
 - `POST /user` - Register a user
 - `POST /user/login` - Login to the user
+- `GET /user/:find?findBy=` - Get user of authenticated system by id/name (*auth*)
 - `GET /user` - Get authenticated user (*auth user*)
-- `GET /user/:id` - Get user of authenticated system by id (*auth*)
 - `GET /user/users` - Get all users of authenticated system (*auth*)
 - `GET /user/balance` - Get balance of authenticated user (*auth user*)
 

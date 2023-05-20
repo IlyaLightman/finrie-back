@@ -34,6 +34,17 @@ const userRoutes = async (server: FastifyInstance) => {
 	)
 
 	server.get(
+		'/:find',
+		{
+			preHandler: [server.authenticate],
+			schema: {
+				response: { 200: $ref('userResponseSchema') }
+			}
+		},
+		getUserHandler
+	)
+
+	server.get(
 		'/',
 		{
 			preHandler: [server.authenticate, server.checkUser],
@@ -42,17 +53,6 @@ const userRoutes = async (server: FastifyInstance) => {
 			}
 		},
 		getAuthUserHandler
-	)
-
-	server.get(
-		'/:id',
-		{
-			preHandler: [server.authenticate],
-			schema: {
-				response: { 200: $ref('userResponseSchema') }
-			}
-		},
-		getUserHandler
 	)
 
 	server.get(

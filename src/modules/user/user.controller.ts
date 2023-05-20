@@ -88,11 +88,16 @@ export const getAuthUserHandler = async (request: FastifyRequest) => {
 	return { ...user, system_name: system.name }
 }
 
-export const getUserHandler = async (request: FastifyRequest<{ Params: { id: string } }>) => {
+export const getUserHandler = async (
+	request: FastifyRequest<{ Params: { find: string }; Querystring: { findBy: string } }>
+) => {
 	const { system_id } = request.user
+	const { findBy } = request.query
+	const { find } = request.params
+
 	const user = await findUser({
 		system_id,
-		id: request.params.id
+		[findBy === 'name' ? 'name' : 'id']: find
 	})
 	return user
 }
