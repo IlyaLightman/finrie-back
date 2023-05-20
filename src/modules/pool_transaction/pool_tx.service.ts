@@ -3,12 +3,36 @@ import { CreatePoolTxInput } from './pool_tx.schema'
 
 import { getUserReceiver } from '../receiver'
 import { getUserSender } from '../sender'
-import { PoolTransaction, Sender } from '@prisma/client'
+import { PoolTransactionStatus, Sender, TransactionType } from '@prisma/client'
 
-const formPoolTransactions = (transactions: PoolTransaction[], sender: Sender) =>
+const formPoolTransactions = (
+	transactions: {
+		system_id: string
+		sender_id: string
+		receiver_id: string
+		created_at: Date
+		type: TransactionType
+		sender: {
+			user: {
+				name: string
+			} | null
+		}
+		receiver: {
+			user: {
+				name: string
+			} | null
+		}
+		pool_transaction_id: string
+		value: number
+		status: PoolTransactionStatus
+	}[],
+	sender: Sender
+) =>
 	transactions.map(tx => ({
 		...tx,
-		form: tx.sender_id === sender?.sender_id ? 'withdraw' : 'deposit'
+		form: tx.sender_id === sender?.sender_id ? 'withdraw' : 'deposit',
+		receiver_name: tx.receiver?.user?.name,
+		sender_name: tx.sender?.user?.name
 	}))
 
 export const createPoolTx = async (input: CreatePoolTxInput) => {
@@ -66,7 +90,11 @@ export const getPoolTxsOfUser = async (system_id: string, user_id: string) => {
 			system_id,
 			OR: [{ sender_id: sender.sender_id }, { receiver_id: receiver.receiver_id }]
 		},
-		select: findSelect,
+		select: {
+			...findSelect,
+			sender: { select: { user: { select: { name: true } } } },
+			receiver: { select: { user: { select: { name: true } } } }
+		},
 		orderBy: { created_at: 'desc' }
 	})
 

@@ -30,7 +30,9 @@ const poolTxResponseSchema = z.object({
 	...poolTxCommon,
 	pool_transaction_id: z.string(),
 	form: z.string().optional(),
-	created_at: z.string()
+	created_at: z.string(),
+	receiver_name: z.string().optional(),
+	sender_name: z.string().optional()
 })
 
 const poolTxsResponseSchema = z.array(poolTxResponseSchema)

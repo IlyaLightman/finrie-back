@@ -1,13 +1,50 @@
-import { Sender, Transaction } from '@prisma/client'
+import { Sender, TransactionType } from '@prisma/client'
 import prisma from '../../utils/prisma'
 import { getUserReceiver } from '../receiver'
 import { getUserSender } from '../sender'
 
-const formTransactions = (transactions: Transaction[], sender: Sender) =>
+const formTransactions = (
+	transactions: {
+		receiver: {
+			user: {
+				name: string
+			} | null
+		}
+		sender: {
+			user: {
+				name: string
+			} | null
+		}
+		type: TransactionType
+		value: number
+		system_id: string
+		sender_id: string
+		receiver_id: string
+		created_at: Date
+		transaction_id: string
+		hash: string
+		prev_hash: string
+	}[],
+	sender: Sender
+) =>
 	transactions.map(tx => ({
 		...tx,
-		form: tx.sender_id === sender?.sender_id ? 'withdraw' : 'deposit'
+		form: tx.sender_id === sender?.sender_id ? 'withdraw' : 'deposit',
+		receiver_name: tx.receiver?.user?.name,
+		sender_name: tx.sender?.user?.name
 	}))
+
+const findSelect = {
+	transaction_id: true,
+	type: true,
+	value: true,
+	system_id: true,
+	sender_id: true,
+	receiver_id: true,
+	created_at: true,
+	hash: true,
+	prev_hash: true
+}
 
 export const getTransaction = async (system_id: string, transaction_id: string) => {
 	return await prisma.transaction.findFirst({ where: { system_id, transaction_id } })
@@ -44,6 +81,11 @@ export const getUserTransactions = async ({
 				gte: created_from,
 				lte: created_to
 			}
+		},
+		select: {
+			...findSelect,
+			sender: { select: { user: { select: { name: true } } } },
+			receiver: { select: { user: { select: { name: true } } } }
 		},
 		orderBy: { created_at: 'desc' }
 	})
