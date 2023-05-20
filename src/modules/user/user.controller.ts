@@ -75,7 +75,7 @@ export const loginUserHandler = async (
 	return reply.code(401).send({ message: 'The password is incorrect' })
 }
 
-export const getAuthUserHandler = async (request: FastifyRequest) => {
+export const getAuthUserHandler = async (request: FastifyRequest, reply: FastifyReply) => {
 	const { system_id, user_id } = request.user
 	const system = await findSystem({ id: system_id })
 	const user = await findUser({
@@ -83,13 +83,14 @@ export const getAuthUserHandler = async (request: FastifyRequest) => {
 		id: user_id
 	})
 
-	if (!user || !system) return null
+	if (!user || !system) return reply.code(404).send({ message: 'User not found' })
 
 	return { ...user, system_name: system.name }
 }
 
 export const getUserHandler = async (
-	request: FastifyRequest<{ Params: { find: string }; Querystring: { findBy: string } }>
+	request: FastifyRequest<{ Params: { find: string }; Querystring: { findBy: string } }>,
+	reply: FastifyReply
 ) => {
 	const { system_id } = request.user
 	const { findBy } = request.query
@@ -99,6 +100,8 @@ export const getUserHandler = async (
 		system_id,
 		[findBy === 'name' ? 'name' : 'id']: find
 	})
+	if (!user) return reply.code(404).send({ message: 'User not found' })
+
 	return user
 }
 
