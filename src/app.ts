@@ -4,12 +4,15 @@ import cors from '@fastify/cors'
 import systemRoutes from './modules/system/system.route'
 import userRoutes from './modules/user/user.route'
 import poolTxRoutes from './modules/pool_transaction/pool_tx.route'
+import txRoutes from './modules/transactions/tx.route'
 
 import { systemSchemas } from './modules/system/system.schema'
 import { userSchemas } from './modules/user/user.schema'
 import { poolTxSchemas } from './modules/pool_transaction/pool_tx.schema'
+import { txSchemas } from './modules/transactions/tx.schema'
 
 import { checkSystem, checkUser } from './utils/decorateChecks'
+import { JsonSchema } from 'fastify-zod'
 
 enum Role {
 	user = 'user',
@@ -54,7 +57,7 @@ server.register(require('@fastify/jwt'), {
 
 server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
 	try {
-		await request.jwtVerify()
+		const ver = await request.jwtVerify()
 
 		if (request.user?.role === Role.user) {
 			request.user = {
@@ -76,13 +79,14 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 server.decorate('checkSystem', checkSystem)
 server.decorate('checkUser', checkUser)
 
+const addSchemas = (schemas: JsonSchema[]) => schemas.forEach(schema => server.addSchema(schema))
+
 const main = async () => {
-	systemSchemas.forEach(schema => server.addSchema(schema))
-	userSchemas.forEach(schema => server.addSchema(schema))
-	poolTxSchemas.forEach(schema => server.addSchema(schema))
+	;[systemSchemas, userSchemas, poolTxSchemas, txSchemas].forEach(addSchemas)
 	server.register(systemRoutes, { prefix: '/system' })
 	server.register(userRoutes, { prefix: '/user' })
 	server.register(poolTxRoutes, { prefix: '/pool_tx' })
+	server.register(txRoutes, { prefix: '/tx' })
 
 	try {
 		const host = process.env.ADDRESS || '0.0.0.0'

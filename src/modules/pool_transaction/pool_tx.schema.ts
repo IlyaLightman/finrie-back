@@ -28,7 +28,8 @@ const createPoolTxResponseSchema = z.object({
 
 const poolTxResponseSchema = z.object({
 	...poolTxCommon,
-	id: z.string(getZodErrObject('ID'))
+	pool_transaction_id: z.string(getZodErrObject('ID')),
+	form: z.string().optional()
 })
 
 const poolTxsResponseSchema = z.array(poolTxResponseSchema)

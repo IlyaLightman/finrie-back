@@ -3,7 +3,7 @@ import { FastifyInstance } from 'fastify'
 import { $ref } from './tx.schema'
 import { getTxHandler, getTxsHandler, getTxsUserHandler } from './tx.controller'
 
-const txRoute = async (server: FastifyInstance) => {
+const txRoutes = async (server: FastifyInstance) => {
 	server.get(
 		'/:id',
 		{
@@ -38,4 +38,4 @@ const txRoute = async (server: FastifyInstance) => {
 	)
 }
 
-export default txRoute
+export default txRoutes

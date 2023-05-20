@@ -16,12 +16,14 @@ const txCommon = {
 }
 
 const txResponseSchema = z.object({
-	...txCommon
+	...txCommon,
+	transaction_id: z.string().optional(),
+	form: z.string().optional()
 })
 
 const txsResponseSchema = z.array(txResponseSchema)
 
-export const { schemas: poolTxSchemas, $ref } = buildJsonSchemas(
+export const { schemas: txSchemas, $ref } = buildJsonSchemas(
 	{
 		txResponseSchema,
 		txsResponseSchema

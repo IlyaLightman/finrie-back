@@ -1,74 +1,67 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 import { CreatePoolTxBodyInput, CreatePoolTxInput } from './pool_tx.schema'
+import { PoolTransactionStatus, TransactionType } from '@prisma/client'
 
 import { createPoolTx, getPoolTxsOfUser, getPoolTx } from './pool_tx.service'
 import { getUserSender } from '../sender'
 import { getSystemSender } from '../sender'
 import { getCurrentIssuanceLimit } from '../system/system.service'
-import { getUserBalance } from '../../balances'
+import { getUserUnregisteredBalance } from '../../balances'
 import { getUserReceiver } from '../receiver'
 import { getPoolTxs } from './pool_tx.service'
 
-enum TransactionType {
-	issuance = 'issuance',
-	transfer = 'transfer'
-}
-
-enum PoolTransactionStatus {
-	processing = 'processing',
-	discarded = 'discarded'
-}
-
 const getValidatedPoolTxDataForUser = async (
 	request: FastifyRequest<{ Body: CreatePoolTxBodyInput }>,
-	jwt_user: any,
-	reply: FastifyReply
+	jwt_user: any
 ) => {
 	if (request.body.receiver_user_id === jwt_user.user_id) {
-		return reply.code(401).send({ message: 'Cannot send to yourself' })
+		return { error: 'Cannot send to yourself' }
 	}
 
 	const value = request.body.value
 
 	const sender = await getUserSender(jwt_user.system_id, jwt_user.user_id)
-	if (!sender) return reply.code(401).send({ message: 'No user sender' })
+	if (!sender) return { error: 'No user sender' }
 
-	const balance = await getUserBalance(jwt_user.system_id, jwt_user.user_id)
+	const balance = await getUserUnregisteredBalance(jwt_user.system_id, jwt_user.user_id)
 	if (balance < value) {
-		return reply.code(401).send({ message: 'Not enough balance' })
+		return { error: 'Not enough balance' }
 	}
 
 	return {
-		type: TransactionType.transfer,
-		sender_id: sender.sender_id,
-		value: value,
-		system_id: jwt_user.system_id,
-		status: PoolTransactionStatus.processing
+		data: {
+			type: TransactionType.transfer,
+			sender_id: sender.sender_id,
+			value: value,
+			system_id: jwt_user.system_id,
+			status: PoolTransactionStatus.processing
+		}
 	}
 }
 
 const getValidatedPoolTxDataForSystem = async (
 	request: FastifyRequest<{ Body: CreatePoolTxBodyInput }>,
-	jwt_user: any,
-	reply: FastifyReply
+	jwt_user: any
 ) => {
 	const value = request.body.value
 
 	const sender = await getSystemSender(jwt_user.system_id)
-	if (!sender) return reply.code(401).send({ message: 'No system sender' })
+	if (!sender) return { error: 'No system sender' }
 
 	const issuance_limit = await getCurrentIssuanceLimit(jwt_user.system_id)
 	if (issuance_limit !== -1 && issuance_limit < value) {
-		return reply.code(401).send({ message: 'Not enough free issuance' })
+		return { error: 'Not enough free issuance' }
 	}
 
 	return {
-		type: TransactionType.transfer,
-		sender_id: sender.sender_id,
-		value: value,
-		system_id: jwt_user.system_id,
-		status: PoolTransactionStatus.processing
+		data: {
+			type: TransactionType.transfer,
+			sender_id: sender.sender_id,
+			value: value,
+			system_id: jwt_user.system_id,
+			status: PoolTransactionStatus.processing
+		}
 	}
 }
 
@@ -88,12 +81,15 @@ export const createPoolTxHandler = async (
 		if (!receiver_user) return reply.code(401).send({ message: 'No receiver for user' })
 		const receiver_id = receiver_user.receiver_id
 
+		console.log(jwt_user)
 		if (jwt_user.role === 'user') {
-			const dataForUser = await getValidatedPoolTxDataForUser(request, jwt_user, reply)
-			data = { ...dataForUser, receiver_id }
+			const dataForUser = await getValidatedPoolTxDataForUser(request, jwt_user)
+			if (!dataForUser.data) return reply.code(401).send({ message: dataForUser.error })
+			data = { ...dataForUser.data, receiver_id }
 		} else if (jwt_user.role === 'system') {
-			const dataForSystem = await getValidatedPoolTxDataForSystem(request, jwt_user, reply)
-			data = { ...dataForSystem, receiver_id }
+			const dataForSystem = await getValidatedPoolTxDataForSystem(request, jwt_user)
+			if (!dataForSystem.data) return reply.code(401).send({ message: dataForSystem.error })
+			data = { ...dataForSystem.data, receiver_id }
 		} else return reply.code(401).send({ message: 'Unavailable token' })
 
 		return await createPoolTx(data)

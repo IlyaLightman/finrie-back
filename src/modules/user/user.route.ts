@@ -5,6 +5,7 @@ import {
 	getAuthUserHandler,
 	getUserBalance,
 	getUserHandler,
+	getUserUnregisteredBalance,
 	getUsersHandler,
 	loginUserHandler,
 	registerUserHandler
@@ -75,6 +76,17 @@ const userRoutes = async (server: FastifyInstance) => {
 			}
 		},
 		getUserBalance
+	)
+
+	server.get(
+		'/unregisteredBalance',
+		{
+			preHandler: [server.authenticate, server.checkUser],
+			schema: {
+				response: { 200: $ref('userBalanceSchema') }
+			}
+		},
+		getUserUnregisteredBalance
 	)
 }
 

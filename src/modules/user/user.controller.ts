@@ -5,7 +5,10 @@ import { createUser, findUser, findUsers } from './user.service'
 import { CreateUserRequestInput, LoginUserRequestSchema } from './user.schema'
 import { createSender } from '../sender'
 import { createReceiver } from '../receiver'
-import { getUserBalance as getBalance } from '../../balances'
+import {
+	getUserBalance as getBalance,
+	getUserUnregisteredBalance as getUnregisteredBalance
+} from '../../balances'
 
 import { server } from './../../app'
 import { findSystem } from '../system/system.service'
@@ -116,4 +119,11 @@ export const getUserBalance = async (request: FastifyRequest, reply: FastifyRepl
 	if (!system_id || !user_id) return reply.code(401).send({ message: 'Unavailable JWT' })
 	const balance = await getBalance(system_id, user_id)
 	return balance
+}
+
+export const getUserUnregisteredBalance = async (request: FastifyRequest, reply: FastifyReply) => {
+	const { system_id, user_id } = request.user
+	if (!system_id || !user_id) return reply.code(401).send({ message: 'Unavailable JWT' })
+	const unregistered_balance = await getUnregisteredBalance(system_id, user_id)
+	return unregistered_balance
 }
