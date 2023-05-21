@@ -31,7 +31,7 @@ model User {
   @@map("users")
 
   user_id String @db.Uuid @id @default(uuid())
-  name String @unique
+  name String
   system_id String @db.Uuid
   system System @relation(fields: [system_id], references: [system_id])
   password_hash String

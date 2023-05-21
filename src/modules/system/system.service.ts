@@ -5,12 +5,15 @@ import { calcSystemDistributionByTransactions } from '../transactions/tx.service
 import { calcPoolTransactionsSystemDistribution } from '../pool_transaction/pool_tx.service'
 
 export const createSystem = async (input: CreateSystemInput) => {
-	const { password, ...data } = input
+	const { password, issuance_current_limit, ...data } = input
 
 	const passwordHash = await hashPassword(password)
+
 	const system = await prisma.system.create({
 		data: {
 			...data,
+			issuance_current_limit:
+				issuance_current_limit === undefined ? -1 : issuance_current_limit,
 			password_hash: passwordHash,
 			hash: '123' // todo: hashing of system
 		}
@@ -62,12 +65,16 @@ const getSystemIssuanceCurrentLimit = async (system_id: string) => {
 
 export const getCurrentIssuance = async (system_id: string) => {
 	const current_limit = await getSystemIssuanceCurrentLimit(system_id)
+	if (current_limit === -1) return -1
+
 	const tx_distribution = await calcSystemDistributionByTransactions(system_id)
 	return current_limit - tx_distribution
 }
 
 export const getCurrentUnregisteredIssuance = async (system_id: string) => {
 	const current_limit = await getSystemIssuanceCurrentLimit(system_id)
+	if (current_limit === -1) return -1
+
 	const tx_distribution = await calcSystemDistributionByTransactions(system_id)
 	const pool_tx_distribution = await calcPoolTransactionsSystemDistribution(system_id)
 	return current_limit - tx_distribution - pool_tx_distribution

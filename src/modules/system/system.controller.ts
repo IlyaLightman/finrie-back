@@ -25,6 +25,10 @@ export const registerSystemHandler = async (
 			return reply.code(401).send({ message: 'System with this name already exists' })
 		}
 
+		if (body.issuance_restriction === 'unlimited') {
+			body.issuance_current_limit = -1
+		}
+
 		const system = await createSystem(body)
 		await createSender({ system_id: system.system_id })
 
