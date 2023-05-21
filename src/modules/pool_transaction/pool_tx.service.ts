@@ -1,9 +1,9 @@
 import prisma from '../../utils/prisma'
-import { CreatePoolTxInput } from './pool_tx.schema'
+import { PoolTransaction, Sender } from '@prisma/client'
 
+import { CreatePoolTxInput } from './pool_tx.schema'
 import { getUserReceiver } from '../receiver'
 import { getUserSender } from '../sender'
-import { PoolTransaction, Sender } from '@prisma/client'
 
 interface poolTransactionUserName {
 	user: {

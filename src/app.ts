@@ -1,5 +1,7 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
-import cors from '@fastify/cors'
+import { JsonSchema } from 'fastify-zod'
+import fastifyCors from '@fastify/cors'
+import fastifySchedule from '@fastify/schedule'
 
 import systemRoutes from './modules/system/system.route'
 import userRoutes from './modules/user/user.route'
@@ -12,7 +14,7 @@ import { poolTxSchemas } from './modules/pool_transaction/pool_tx.schema'
 import { txSchemas } from './modules/transactions/tx.schema'
 
 import { checkSystem, checkUser } from './utils/decorateChecks'
-import { JsonSchema } from 'fastify-zod'
+import { processorJob } from './txProcessor/processor'
 
 enum Role {
 	user = 'user',
@@ -37,12 +39,13 @@ declare module 'fastify' {
 	export interface FastifyInstance {
 		authenticate: any
 		jwt: any
+		schedule: any
 		checkSystem: any
 		checkUser: any
 	}
 }
 
-server.register(cors, {
+server.register(fastifyCors, {
 	origin: (origin, cb) => {
 		const hostname = new URL(origin || '').hostname
 
@@ -50,6 +53,8 @@ server.register(cors, {
 		cb(new Error('Not allowed'), false)
 	}
 })
+
+server.register(fastifySchedule)
 
 server.register(require('@fastify/jwt'), {
 	secret: process.env.SECRET
@@ -87,6 +92,11 @@ const main = async () => {
 	server.register(userRoutes, { prefix: '/user' })
 	server.register(poolTxRoutes, { prefix: '/pool_tx' })
 	server.register(txRoutes, { prefix: '/tx' })
+
+	server.ready().then(() => {
+		console.log('Scheduling processor job')
+		server.scheduler.addSimpleIntervalJob(processorJob)
+	})
 
 	try {
 		const host = process.env.ADDRESS || '0.0.0.0'

@@ -10,6 +10,8 @@ Coins are exchanged between users through transactions. First, they go into the 
 
 **Run Dev:** `npm run dev`
 
+For repetitive tasks (such as monitoring a transaction pool that occurs every 2 minutes) the toad-scheduler is used
+
 ### Database Schema
 ![Schema](https://s1.hostingkartinok.com/uploads/images/2023/05/5601d880da9175d663059eef6f74e42e.png)
 

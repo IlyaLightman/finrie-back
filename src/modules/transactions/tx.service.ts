@@ -1,5 +1,6 @@
-import { Sender, Transaction, TransactionType } from '@prisma/client'
 import prisma from '../../utils/prisma'
+import { Sender, Transaction } from '@prisma/client'
+
 import { getUserReceiver } from '../receiver'
 import { getUserSender } from '../sender'
 
@@ -116,5 +117,5 @@ export const calcUserBalanceByTransactions = async (
 		}
 	})
 
-	return aggregateReceive._sum.value || 0 - (aggregateSent._sum.value || 0)
+	return (aggregateReceive._sum.value || 0) - (aggregateSent._sum.value || 0)
 }
