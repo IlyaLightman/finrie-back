@@ -6,7 +6,7 @@ import { PoolTransactionStatus, TransactionType } from '@prisma/client'
 import { createPoolTx, getPoolTxsOfUser, getPoolTx } from './pool_tx.service'
 import { getUserSender } from '../sender'
 import { getSystemSender } from '../sender'
-import { getCurrentIssuanceLimit } from '../system/system.service'
+import { getCurrentIssuance } from '../system/system.service'
 import { getUserUnregisteredBalance } from '../../balances'
 import { getUserReceiver } from '../receiver'
 import { getPoolTxs } from './pool_tx.service'
@@ -49,14 +49,14 @@ const getValidatedPoolTxDataForSystem = async (
 	const sender = await getSystemSender(jwt_user.system_id)
 	if (!sender) return { error: 'No system sender' }
 
-	const issuance_limit = await getCurrentIssuanceLimit(jwt_user.system_id)
+	const issuance_limit = await getCurrentIssuance(jwt_user.system_id)
 	if (issuance_limit !== -1 && issuance_limit < value) {
 		return { error: 'Not enough free issuance' }
 	}
 
 	return {
 		data: {
-			type: TransactionType.transfer,
+			type: TransactionType.issuance,
 			sender_id: sender.sender_id,
 			value: value,
 			system_id: jwt_user.system_id,

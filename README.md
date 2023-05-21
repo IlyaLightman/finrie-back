@@ -47,6 +47,7 @@ A weekly report on the movement of coins in the system. It is created every week
 - `GET /system` - Get authenticated system (*auth*)
 - `GET /system/systems` - Get all systems (*auth*)
 - `GET /system/issuance` - Get free issuance of authenticated system (*auth system*)
+- `GET /system/unregisteredIssuance` - Get unregistered issuance (with values of processing pool_transactions) of authenticated system (*auth system*)
 
 ##### User
 - `POST /user` - Register a user
@@ -55,6 +56,7 @@ A weekly report on the movement of coins in the system. It is created every week
 - `GET /user` - Get authenticated user (*auth user*)
 - `GET /user/users` - Get all users of authenticated system (*auth*)
 - `GET /user/balance` - Get balance of authenticated user (*auth user*)
+- `GET /user/unregisteredBalance` - Get unregistered balance (with values of processing pool_transactions) of authenticated user (*auth user*)
 
 ##### Pool Transaction
 - `POST /pool_tx` - Create a pool transaction (if you log in as a system, then the sender will be the system, if you log in as a user, then the sender will be the user) (*auth*)

@@ -5,6 +5,7 @@ import {
 	getAuthSystemHandler,
 	getSystemHandler,
 	getSystemIssuance,
+	getSystemUnregisteredIssuance,
 	getSystemsHandler,
 	loginSystemHandler,
 	registerSystemHandler
@@ -68,12 +69,23 @@ const systemRoutes = async (server: FastifyInstance) => {
 	server.get(
 		'/issuance',
 		{
-			preHandler: [server.authenticate],
+			preHandler: [server.authenticate, server.checkSystem],
 			schema: {
 				response: { 200: $ref('systemIssuanceSchema') }
 			}
 		},
 		getSystemIssuance
+	)
+
+	server.get(
+		'/unregisteredIssuance',
+		{
+			preHandler: [server.authenticate, server.checkSystem],
+			schema: {
+				response: { 200: $ref('systemIssuanceSchema') }
+			}
+		},
+		getSystemUnregisteredIssuance
 	)
 }
 

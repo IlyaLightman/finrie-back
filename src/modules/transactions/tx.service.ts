@@ -2,7 +2,7 @@ import prisma from '../../utils/prisma'
 import { Sender, Transaction } from '@prisma/client'
 
 import { getUserReceiver } from '../receiver'
-import { getUserSender } from '../sender'
+import { getSystemSender, getUserSender } from '../sender'
 
 interface transactionUserName {
 	user: {
@@ -118,4 +118,30 @@ export const calcUserBalanceByTransactions = async (
 	})
 
 	return (aggregateReceive._sum.value || 0) - (aggregateSent._sum.value || 0)
+}
+
+export const calcSystemDistributionByTransactions = async (
+	system_id: string,
+	created_from?: string,
+	created_to?: string
+): Promise<number> => {
+	const sender = await getSystemSender(system_id)
+
+	if (!sender) return 0
+
+	const aggregateSent = await prisma.transaction.aggregate({
+		where: {
+			system_id,
+			sender_id: sender.sender_id,
+			created_at: {
+				gte: created_from,
+				lte: created_to
+			}
+		},
+		_sum: {
+			value: true
+		}
+	})
+
+	return aggregateSent._sum.value || 0
 }

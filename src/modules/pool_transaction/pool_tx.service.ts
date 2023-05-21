@@ -1,9 +1,9 @@
 import prisma from '../../utils/prisma'
-import { PoolTransaction, Sender } from '@prisma/client'
+import { PoolTransaction, PoolTransactionStatus, Sender } from '@prisma/client'
 
 import { CreatePoolTxInput } from './pool_tx.schema'
 import { getUserReceiver } from '../receiver'
-import { getUserSender } from '../sender'
+import { getSystemSender, getUserSender } from '../sender'
 
 interface poolTransactionUserName {
 	user: {
@@ -91,7 +91,7 @@ export const getPoolTxsOfUser = async (system_id: string, user_id: string) => {
 	return formPoolTransactions(pool_transactions, sender)
 }
 
-export const calcPoolTransactionsSum = async (
+export const calcPoolTransactionsUserSum = async (
 	system_id: string,
 	user_id: string,
 	created_from?: string,
@@ -109,7 +109,8 @@ export const calcPoolTransactionsSum = async (
 			created_at: {
 				gte: created_from,
 				lte: created_to
-			}
+			},
+			status: PoolTransactionStatus.processing
 		},
 		_sum: {
 			value: true
@@ -123,7 +124,8 @@ export const calcPoolTransactionsSum = async (
 			created_at: {
 				gte: created_from,
 				lte: created_to
-			}
+			},
+			status: PoolTransactionStatus.processing
 		},
 		_sum: {
 			value: true
@@ -131,4 +133,31 @@ export const calcPoolTransactionsSum = async (
 	})
 
 	return (aggregateReceive._sum.value || 0) - (aggregateSent._sum.value || 0)
+}
+
+export const calcPoolTransactionsSystemDistribution = async (
+	system_id: string,
+	created_from?: string,
+	created_to?: string
+): Promise<number> => {
+	const sender = await getSystemSender(system_id)
+
+	if (!sender) return 0
+
+	const aggregateSent = await prisma.poolTransaction.aggregate({
+		where: {
+			system_id,
+			created_at: {
+				gte: created_from,
+				lte: created_to
+			},
+			sender_id: sender.sender_id,
+			status: PoolTransactionStatus.processing
+		},
+		_sum: {
+			value: true
+		}
+	})
+
+	return aggregateSent._sum.value || 0
 }
