@@ -16,14 +16,10 @@ import { txSchemas } from './modules/transactions/tx.schema'
 import { checkSystem, checkUser } from './utils/decorateChecks'
 import { processorJob } from './txProcessor/processor'
 
-enum Role {
+export enum Role {
 	user = 'user',
 	system = 'system'
 }
-
-export const server = Fastify({
-	logger: true
-})
 
 declare module 'fastify' {
 	interface FastifyRequest {
@@ -36,6 +32,7 @@ declare module 'fastify' {
 			iat?: number
 		}
 	}
+
 	export interface FastifyInstance {
 		authenticate: any
 		jwt: any
@@ -45,12 +42,16 @@ declare module 'fastify' {
 	}
 }
 
+export const server = Fastify({
+	logger: true
+})
+
 server.register(fastifyCors, {
 	origin: (origin, cb) => {
 		const hostname = new URL(origin || '').hostname
 
 		if (hostname === process.env.CORS_HOSTNAME) return cb(null, true)
-		cb(new Error('Not allowed'), false)
+		cb(new Error('Not allowed (CORS)'), false)
 	}
 })
 
@@ -62,7 +63,7 @@ server.register(require('@fastify/jwt'), {
 
 server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
 	try {
-		const ver = await request.jwtVerify()
+		await request.jwtVerify()
 
 		if (request.user?.role === Role.user) {
 			request.user = {

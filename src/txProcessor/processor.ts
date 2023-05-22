@@ -19,4 +19,5 @@ const processorTask = new AsyncTask(
 	}
 )
 
-export const processorJob = new SimpleIntervalJob({ seconds: 120 }, processorTask)
+const intervalSeconds = Number(process.env.TX_PROCESSOR_INTERVAL_SEC || 40)
+export const processorJob = new SimpleIntervalJob({ seconds: intervalSeconds }, processorTask)
