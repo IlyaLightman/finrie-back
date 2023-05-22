@@ -63,7 +63,6 @@ CREATE TABLE "weekly_statements" (
     "system_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "week_number" INTEGER NOT NULL,
     "transactions_count" INTEGER NOT NULL,
 
     CONSTRAINT "weekly_statements_pkey" PRIMARY KEY ("weekly_statement_id")
@@ -100,9 +99,6 @@ CREATE TABLE "transactions" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "systems_name_key" ON "systems"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_name_key" ON "users"("name");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_system_id_fkey" FOREIGN KEY ("system_id") REFERENCES "systems"("system_id") ON DELETE RESTRICT ON UPDATE CASCADE;

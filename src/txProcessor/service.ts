@@ -6,7 +6,7 @@ export const getPoolTransactionsToRegister = async (): Promise<PoolTransaction[]
 		where: {
 			status: PoolTransactionStatus.processing
 		},
-		orderBy: { created_at: 'desc' }
+		orderBy: { created_at: 'asc' }
 	})
 
 	return pool_txs

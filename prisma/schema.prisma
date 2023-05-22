@@ -86,7 +86,6 @@ model WeeklyStatement {
   user_id String @db.Uuid
   user User @relation(fields: [user_id], references: [user_id])
   timestamp DateTime @default(now())
-  week_number Int
   transactions_count Int
 }
 
