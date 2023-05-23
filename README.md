@@ -9,6 +9,8 @@ Coins are exchanged between users through transactions. First, they go into the 
 **Frontend**: [GutHub Repository](https://github.com/IlyaLightman/finrie-front)
 
 **Run Dev:** `npm run dev`
+**Build:** `npm run build`
+**Start built prod:** `npm run start`
 
 For repetitive tasks (such as monitoring a transaction pool that occurs every 40 seconds) the toad-scheduler is used
 
@@ -68,6 +70,9 @@ A weekly report on the movement of coins in the system. It is created every week
 - `GET /tx/:id` - Get transaction of auth system (*auth*)
 - `GET /tx/system` - Get all transactions of authenticated system (or system of authenticated user) (*auth*)
 - `GET /tx` - Get all transactions of authenticated user where he is the sender or recipient (*auth user*)
+
+### Todo
+- Members/transactions pagination
 
 ### Nice to have
 - KYC Fields for user, user accepting by system creator (removed for the first version)

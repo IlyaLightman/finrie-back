@@ -4,7 +4,9 @@
   "description": "Backend of Finrie",
   "main": "app.js",
   "scripts": {
-    "dev": "tsnd --respawn --transpile-only --exit-child src/app.ts"
+    "dev": "tsnd --respawn --transpile-only --exit-child src/app.ts",
+    "build": "tsc",
+    "start": "node build/app.js"
   },
   "author": "Ilya Zaytsev",
   "repository": "https://github.com/IlyaLightman/finrie-back",
