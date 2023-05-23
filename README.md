@@ -9,8 +9,10 @@ Coins are exchanged between users through transactions. First, they go into the 
 **Frontend**: [GutHub Repository](https://github.com/IlyaLightman/finrie-front)
 
 **Run Dev:** `npm run dev`
+
 **Build:** `npm run build`
-**Start built prod:** `npm run start`
+
+**Start built:** `npm run start`
 
 For repetitive tasks (such as monitoring a transaction pool that occurs every 40 seconds) the toad-scheduler is used
 

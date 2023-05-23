@@ -101,7 +101,7 @@ const main = async () => {
 
 	try {
 		const host = process.env.ADDRESS || '0.0.0.0'
-		const port = Number(process.env.PORT || 3000)
+		const port = Number(process.env.PORT || 5000)
 		await server.listen({ port, host })
 		console.log(`Server listening on ${host}:${port}`)
 	} catch (err) {
