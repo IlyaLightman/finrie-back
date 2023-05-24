@@ -14,6 +14,8 @@ Coins are exchanged between users through transactions. First, they go into the 
 
 **Start built:** `npm run start`
 
+**Docker compose** deploys frontend (port 3000) from Docker Hub, backend (port 5000) and database
+
 For repetitive tasks (such as monitoring a transaction pool that occurs every 40 seconds) the toad-scheduler is used
 
 ### Database Schema
