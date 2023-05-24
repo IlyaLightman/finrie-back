@@ -3,11 +3,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:pass@database:5432/postgres?schema=finrie
+      - SECRET=secret
+      - CORS_HOSTNAME=localhost
     ports:
       - "5000:5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
+      database:
+        condition: service_healthy
+    links:
       - database
   database:
+    container_name: "database"
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
@@ -15,3 +25,8 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
