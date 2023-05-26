@@ -50,8 +50,9 @@ server.register(fastifyCors, {
 	origin: (origin, cb) => {
 		const hostname = new URL(origin || '').hostname
 
-		if (hostname === process.env.CORS_HOSTNAME) return cb(null, true)
-		cb(new Error('Not allowed (CORS)'), false)
+		return cb(null, true)
+		// if (hostname === process.env.CORS_HOSTNAME) return cb(null, true)
+		// cb(new Error('Not allowed (CORS)'), false)
 	}
 })
 
